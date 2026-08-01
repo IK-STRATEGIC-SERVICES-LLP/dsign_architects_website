@@ -1,0 +1,954 @@
+{
+  "projects": [
+    {
+      "slug": "school-sports-facilities-45-acres-mumbai-pune-expressway",
+      "title": "School & Sports Facilities (45 Acres)",
+      "location": "MUMBAI - PUNE EXPRESSWAY",
+      "category": "Master Planning",
+      "image": "/portfolio/school-sports-facilities-45-acres-mumbai-pune-expressway.jpg",
+      "page": 10
+    },
+    {
+      "slug": "45-acres-master-plan-pune",
+      "title": "45 Acres Master Plan",
+      "location": "PUNE",
+      "category": "Master Planning",
+      "image": "/portfolio/45-acres-master-plan-pune.jpg",
+      "page": 11
+    },
+    {
+      "slug": "youth-center-23-acres-delhi",
+      "title": "Youth Center  - 23 Acres",
+      "location": "DELHI",
+      "category": "Master Planning",
+      "image": "/portfolio/youth-center-23-acres-delhi.jpg",
+      "page": 12
+    },
+    {
+      "slug": "youth-center-3-acres-ahmedabad",
+      "title": "Youth Center (3 Acres)",
+      "location": "AHMEDABAD",
+      "category": "Master Planning",
+      "image": "/portfolio/youth-center-3-acres-ahmedabad.jpg",
+      "page": 13
+    },
+    {
+      "slug": "cyber-security-center-of-excellence-campus-7-acres-navi-mumbai",
+      "title": "Cyber Security Center of Excellence Campus (7 Acres)",
+      "location": "NAVI MUMBAI",
+      "category": "Master Planning",
+      "image": "/portfolio/cyber-security-center-of-excellence-campus-7-acres-navi-mumbai.jpg",
+      "page": 14
+    },
+    {
+      "slug": "cyber-security-center-of-excellence-campus-7-acres-navi-mumbai-2",
+      "title": "Cyber Security Center of Excellence Campus (7 Acres)",
+      "location": "NAVI MUMBAI",
+      "category": "Master Planning",
+      "image": "/portfolio/cyber-security-center-of-excellence-campus-7-acres-navi-mumbai-2.jpg",
+      "page": 15
+    },
+    {
+      "slug": "lake-beautification-6-7-acres-satara",
+      "title": "Lake Beautification (6.7 Acres)",
+      "location": "SATARA",
+      "category": "Landscape",
+      "image": "/portfolio/lake-beautification-6-7-acres-satara.jpg",
+      "page": 17
+    },
+    {
+      "slug": "lake-beautification-5-acres-kiwal",
+      "title": "Lake Beautification (5 Acres)",
+      "location": "KIWAL",
+      "category": "Landscape",
+      "image": "/portfolio/lake-beautification-5-acres-kiwal.jpg",
+      "page": 18
+    },
+    {
+      "slug": "river-front-garden-pune",
+      "title": "River Front Garden",
+      "location": "PUNE",
+      "category": "Landscape",
+      "image": "/portfolio/river-front-garden-pune.jpg",
+      "page": 19
+    },
+    {
+      "slug": "aundh-chowk-aundh-satara",
+      "title": "Aundh Chowk",
+      "location": "AUNDH SATARA",
+      "category": "Landscape",
+      "image": "/portfolio/aundh-chowk-aundh-satara.jpg",
+      "page": 20
+    },
+    {
+      "slug": "satark-heroes-park-wanowrie-pune",
+      "title": "Satark Heroes Park",
+      "location": "WANOWRIE PUNE",
+      "category": "Landscape",
+      "image": "/portfolio/satark-heroes-park-wanowrie-pune.jpg",
+      "page": 21
+    },
+    {
+      "slug": "satark-heroes-park-wanowrie-pune-2",
+      "title": "Satark Heroes Park",
+      "location": "WANOWRIE PUNE",
+      "category": "Landscape",
+      "image": "/portfolio/satark-heroes-park-wanowrie-pune-2.jpg",
+      "page": 22
+    },
+    {
+      "slug": "indian-air-force-park-camp-pune",
+      "title": "Indian Air Force Park",
+      "location": "CAMP PUNE",
+      "category": "Landscape",
+      "image": "/portfolio/indian-air-force-park-camp-pune.jpg",
+      "page": 23
+    },
+    {
+      "slug": "collectors-office-ahmednagar",
+      "title": "Collectors Office",
+      "location": "AHMEDNAGAR",
+      "category": "Government",
+      "image": "/portfolio/collectors-office-ahmednagar.jpg",
+      "page": 25
+    },
+    {
+      "slug": "sassoon-multi-speciality-hospital-pune",
+      "title": "Sassoon Multi Speciality Hospital",
+      "location": "PUNE",
+      "category": "Government",
+      "image": "/portfolio/sassoon-multi-speciality-hospital-pune.jpg",
+      "page": 26
+    },
+    {
+      "slug": "entrance-gate-baramati",
+      "title": "Entrance Gate",
+      "location": "BARAMATI",
+      "category": "Government",
+      "image": "/portfolio/entrance-gate-baramati.jpg",
+      "page": 27
+    },
+    {
+      "slug": "ib-guest-house-pune",
+      "title": "IB Guest House",
+      "location": "PUNE",
+      "category": "Government",
+      "image": "/portfolio/ib-guest-house-pune.jpg",
+      "page": 28
+    },
+    {
+      "slug": "police-headquarters-sports-room-pune",
+      "title": "Police Headquarters - Sports Room",
+      "location": "PUNE",
+      "category": "Government",
+      "image": "/portfolio/police-headquarters-sports-room-pune.jpg",
+      "page": 29
+    },
+    {
+      "slug": "police-station-pune",
+      "title": "Police Station",
+      "location": "PUNE",
+      "category": "Government",
+      "image": "/portfolio/police-station-pune.jpg",
+      "page": 30
+    },
+    {
+      "slug": "beacon-hotel-30-keys-by-the-fern",
+      "title": "Beacon Hotel (30 Keys) By The Fern",
+      "location": "",
+      "category": "Commercial",
+      "image": "/portfolio/beacon-hotel-30-keys-by-the-fern.jpg",
+      "page": 32
+    },
+    {
+      "slug": "hotel-100-keys-by-the-fern-chhattisgarh",
+      "title": "Hotel (100 Keys) By The Fern",
+      "location": "CHHATTISGARH",
+      "category": "Commercial",
+      "image": "/portfolio/hotel-100-keys-by-the-fern-chhattisgarh.jpg",
+      "page": 33
+    },
+    {
+      "slug": "hotel-98-keys-clover-builders-pune-kharadi",
+      "title": "Hotel (98 Keys) - Clover Builders",
+      "location": "PUNE - KHARADI",
+      "category": "Commercial",
+      "image": "/portfolio/hotel-98-keys-clover-builders-pune-kharadi.jpg",
+      "page": 34
+    },
+    {
+      "slug": "commercial-tower-office-pune",
+      "title": "Commercial Tower (Office )",
+      "location": "PUNE",
+      "category": "Commercial",
+      "image": "/portfolio/commercial-tower-office-pune.jpg",
+      "page": 35
+    },
+    {
+      "slug": "commercial-tower-office-pune-2",
+      "title": "Commercial Tower (Office )",
+      "location": "PUNE",
+      "category": "Commercial",
+      "image": "/portfolio/commercial-tower-office-pune-2.jpg",
+      "page": 36
+    },
+    {
+      "slug": "office-building-pune",
+      "title": "Office Building",
+      "location": "PUNE",
+      "category": "Commercial",
+      "image": "/portfolio/office-building-pune.jpg",
+      "page": 37
+    },
+    {
+      "slug": "commercial-complex-chakur",
+      "title": "Commercial Complex",
+      "location": "CHAKUR",
+      "category": "Commercial",
+      "image": "/portfolio/commercial-complex-chakur.jpg",
+      "page": 38
+    },
+    {
+      "slug": "community-center-solapur",
+      "title": "Community Center",
+      "location": "SOLAPUR",
+      "category": "Commercial",
+      "image": "/portfolio/community-center-solapur.jpg",
+      "page": 39
+    },
+    {
+      "slug": "resort-pune",
+      "title": "Resort",
+      "location": "PUNE",
+      "category": "Commercial",
+      "image": "/portfolio/resort-pune.jpg",
+      "page": 40
+    },
+    {
+      "slug": "resort-pune-2",
+      "title": "Resort",
+      "location": "PUNE",
+      "category": "Commercial",
+      "image": "/portfolio/resort-pune-2.jpg",
+      "page": 41
+    },
+    {
+      "slug": "resort-club-house-by-fortune-group-bangalore",
+      "title": "Resort Club House By Fortune Group",
+      "location": "BANGALORE",
+      "category": "Commercial",
+      "image": "/portfolio/resort-club-house-by-fortune-group-bangalore.jpg",
+      "page": 42
+    },
+    {
+      "slug": "ias-hostel-dasna-up",
+      "title": "IAS Hostel",
+      "location": "DASNA,UP",
+      "category": "Institutional",
+      "image": "/portfolio/ias-hostel-dasna-up.jpg",
+      "page": 44
+    },
+    {
+      "slug": "studio-hostel-bandra-reclamation-bandra-west-mumbai",
+      "title": "Studio Hostel",
+      "location": "BANDRA RECLAMATION,BANDRA WEST,MUMBAI",
+      "category": "Institutional",
+      "image": "/portfolio/studio-hostel-bandra-reclamation-bandra-west-mumbai.jpg",
+      "page": 45
+    },
+    {
+      "slug": "youth-center-administration-block-uttar-pradesh",
+      "title": "Youth Center - Administration Block",
+      "location": "UTTAR PRADESH",
+      "category": "Institutional",
+      "image": "/portfolio/youth-center-administration-block-uttar-pradesh.jpg",
+      "page": 46
+    },
+    {
+      "slug": "the-bishops-school-pune",
+      "title": "The Bishop’s School",
+      "location": "PUNE",
+      "category": "Institutional",
+      "image": "/portfolio/the-bishops-school-pune.jpg",
+      "page": 47
+    },
+    {
+      "slug": "the-bishops-school-pune-2",
+      "title": "The Bishop’s School",
+      "location": "PUNE",
+      "category": "Institutional",
+      "image": "/portfolio/the-bishops-school-pune-2.jpg",
+      "page": 48
+    },
+    {
+      "slug": "the-bishops-school-pune-3",
+      "title": "The Bishop’s School",
+      "location": "PUNE",
+      "category": "Institutional",
+      "image": "/portfolio/the-bishops-school-pune-3.jpg",
+      "page": 49
+    },
+    {
+      "slug": "the-bishops-school-cambridge-pune",
+      "title": "The Bishop’s School - Cambridge",
+      "location": "PUNE",
+      "category": "Institutional",
+      "image": "/portfolio/the-bishops-school-cambridge-pune.jpg",
+      "page": 50
+    },
+    {
+      "slug": "the-bishops-school-cambridge-pune-2",
+      "title": "The Bishop’s School - Cambridge",
+      "location": "PUNE",
+      "category": "Institutional",
+      "image": "/portfolio/the-bishops-school-cambridge-pune-2.jpg",
+      "page": 51
+    },
+    {
+      "slug": "the-orbis-school-pune",
+      "title": "The Orbis School",
+      "location": "PUNE",
+      "category": "Institutional",
+      "image": "/portfolio/the-orbis-school-pune.jpg",
+      "page": 52
+    },
+    {
+      "slug": "g-11-residential-tower-solapur",
+      "title": "G+11 Residential Tower",
+      "location": "SOLAPUR",
+      "category": "Residential",
+      "image": "/portfolio/g-11-residential-tower-solapur.jpg",
+      "page": 54
+    },
+    {
+      "slug": "residential-pune",
+      "title": "Residential",
+      "location": "PUNE",
+      "category": "Residential",
+      "image": "/portfolio/residential-pune.jpg",
+      "page": 55
+    },
+    {
+      "slug": "residential-tower-pune",
+      "title": "Residential Tower",
+      "location": "PUNE",
+      "category": "Residential",
+      "image": "/portfolio/residential-tower-pune.jpg",
+      "page": 56
+    },
+    {
+      "slug": "luxurious-villa-mahableshwar",
+      "title": "Luxurious Villa",
+      "location": "MAHABLESHWAR",
+      "category": "Residential",
+      "image": "/portfolio/luxurious-villa-mahableshwar.jpg",
+      "page": 57
+    },
+    {
+      "slug": "bungalow-saharanpur-up",
+      "title": "Bungalow",
+      "location": "SAHARANPUR, UP",
+      "category": "Residential",
+      "image": "/portfolio/bungalow-saharanpur-up.jpg",
+      "page": 58
+    },
+    {
+      "slug": "villa-pune",
+      "title": "Villa",
+      "location": "PUNE",
+      "category": "Residential",
+      "image": "/portfolio/villa-pune.jpg",
+      "page": 59
+    },
+    {
+      "slug": "furjan-villa-dubai",
+      "title": "Furjan Villa",
+      "location": "DUBAI",
+      "category": "Residential",
+      "image": "/portfolio/furjan-villa-dubai.jpg",
+      "page": 60
+    },
+    {
+      "slug": "cloud-9-pune",
+      "title": "Cloud 9",
+      "location": "PUNE",
+      "category": "Residential",
+      "image": "/portfolio/cloud-9-pune.jpg",
+      "page": 61
+    },
+    {
+      "slug": "farmhouse-lonavala",
+      "title": "Farmhouse",
+      "location": "LONAVALA",
+      "category": "Residential",
+      "image": "/portfolio/farmhouse-lonavala.jpg",
+      "page": 62
+    },
+    {
+      "slug": "farmhouse-lonavala-2",
+      "title": "Farmhouse",
+      "location": "LONAVALA",
+      "category": "Residential",
+      "image": "/portfolio/farmhouse-lonavala-2.jpg",
+      "page": 63
+    },
+    {
+      "slug": "farmhouse-lonavala-3",
+      "title": "Farmhouse",
+      "location": "LONAVALA",
+      "category": "Residential",
+      "image": "/portfolio/farmhouse-lonavala-3.jpg",
+      "page": 64
+    },
+    {
+      "slug": "cottages-lonavala",
+      "title": "Cottages",
+      "location": "LONAVALA",
+      "category": "Residential",
+      "image": "/portfolio/cottages-lonavala.jpg",
+      "page": 65
+    },
+    {
+      "slug": "beacon-hotel-30-keys-by-the-fern-pune",
+      "title": "Beacon Hotel (30 Keys) By The Fern",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/beacon-hotel-30-keys-by-the-fern-pune.jpg",
+      "page": 67
+    },
+    {
+      "slug": "beacon-hotel-30-keys-by-the-fern-pune-2",
+      "title": "Beacon Hotel (30 Keys) By The Fern",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/beacon-hotel-30-keys-by-the-fern-pune-2.jpg",
+      "page": 68
+    },
+    {
+      "slug": "beacon-hotel-30-keys-by-the-fern-pune-3",
+      "title": "Beacon Hotel (30 Keys) By The Fern",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/beacon-hotel-30-keys-by-the-fern-pune-3.jpg",
+      "page": 69
+    },
+    {
+      "slug": "beacon-hotel-30-keys-by-the-fern-pune-4",
+      "title": "Beacon Hotel (30 Keys) By The Fern",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/beacon-hotel-30-keys-by-the-fern-pune-4.jpg",
+      "page": 70
+    },
+    {
+      "slug": "military-intelligence-museum-pune",
+      "title": "Military Intelligence Museum",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/military-intelligence-museum-pune.jpg",
+      "page": 71
+    },
+    {
+      "slug": "guest-house-delhi",
+      "title": "Guest House",
+      "location": "DELHI",
+      "category": "Interior",
+      "image": "/portfolio/guest-house-delhi.jpg",
+      "page": 72
+    },
+    {
+      "slug": "guest-house-delhi-2",
+      "title": "Guest House",
+      "location": "DELHI",
+      "category": "Interior",
+      "image": "/portfolio/guest-house-delhi-2.jpg",
+      "page": 73
+    },
+    {
+      "slug": "clover-highland-pune",
+      "title": "Clover Highland",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/clover-highland-pune.jpg",
+      "page": 74
+    },
+    {
+      "slug": "clover-highland-pune-2",
+      "title": "Clover Highland",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/clover-highland-pune-2.jpg",
+      "page": 75
+    },
+    {
+      "slug": "clover-highland-pune-3",
+      "title": "Clover Highland",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/clover-highland-pune-3.jpg",
+      "page": 76
+    },
+    {
+      "slug": "hiranandani-complex-powai",
+      "title": "Hiranandani Complex",
+      "location": "POWAI",
+      "category": "Interior",
+      "image": "/portfolio/hiranandani-complex-powai.jpg",
+      "page": 77
+    },
+    {
+      "slug": "hiranandani-complex-powai-2",
+      "title": "Hiranandani Complex",
+      "location": "POWAI",
+      "category": "Interior",
+      "image": "/portfolio/hiranandani-complex-powai-2.jpg",
+      "page": 78
+    },
+    {
+      "slug": "government-guest-house-phaltan",
+      "title": "Government Guest House",
+      "location": "PHALTAN",
+      "category": "Interior",
+      "image": "/portfolio/government-guest-house-phaltan.jpg",
+      "page": 79
+    },
+    {
+      "slug": "bridal-boutique-los-angeles-usa",
+      "title": "Bridal Boutique",
+      "location": "LOS ANGELES - USA",
+      "category": "Interior",
+      "image": "/portfolio/bridal-boutique-los-angeles-usa.jpg",
+      "page": 80
+    },
+    {
+      "slug": "banquet-mumbai",
+      "title": "Banquet",
+      "location": "MUMBAI",
+      "category": "Interior",
+      "image": "/portfolio/banquet-mumbai.jpg",
+      "page": 81
+    },
+    {
+      "slug": "perfume-outlet-dubai",
+      "title": "Perfume Outlet",
+      "location": "DUBAI",
+      "category": "Interior",
+      "image": "/portfolio/perfume-outlet-dubai.jpg",
+      "page": 82
+    },
+    {
+      "slug": "the-bishops-school-lobby-pune",
+      "title": "The Bishops School  Lobby",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/the-bishops-school-lobby-pune.jpg",
+      "page": 83
+    },
+    {
+      "slug": "the-bishops-school-multipurpose-hall-pune",
+      "title": "The Bishops School MultiPurpose Hall",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/the-bishops-school-multipurpose-hall-pune.jpg",
+      "page": 84
+    },
+    {
+      "slug": "the-bishops-school-reception-pune",
+      "title": "The Bishops School Reception",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/the-bishops-school-reception-pune.jpg",
+      "page": 85
+    },
+    {
+      "slug": "the-bishops-school-conference-pune",
+      "title": "The Bishops School Conference",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/the-bishops-school-conference-pune.jpg",
+      "page": 86
+    },
+    {
+      "slug": "sasson-multi-specialty-hospital-lobby-pune",
+      "title": "Sasson Multi Specialty Hospital Lobby",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/sasson-multi-specialty-hospital-lobby-pune.jpg",
+      "page": 87
+    },
+    {
+      "slug": "collector-office-conference-ahmednagar",
+      "title": "Collector Office - Conference",
+      "location": "AHMEDNAGAR",
+      "category": "Interior",
+      "image": "/portfolio/collector-office-conference-ahmednagar.jpg",
+      "page": 88
+    },
+    {
+      "slug": "collector-office-auditorium-ahmednagar",
+      "title": "Collector Office - Auditorium",
+      "location": "AHMEDNAGAR",
+      "category": "Interior",
+      "image": "/portfolio/collector-office-auditorium-ahmednagar.jpg",
+      "page": 89
+    },
+    {
+      "slug": "b-j-medical-college-auditorium-pune",
+      "title": "B.J Medical College Auditorium",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/b-j-medical-college-auditorium-pune.jpg",
+      "page": 90
+    },
+    {
+      "slug": "taj-group-real-estate-office-navi-mumbai",
+      "title": "Taj Group Real Estate Office",
+      "location": "NAVI MUMBAI",
+      "category": "Interior",
+      "image": "/portfolio/taj-group-real-estate-office-navi-mumbai.jpg",
+      "page": 91
+    },
+    {
+      "slug": "taj-group-real-estate-office-navi-mumbai-2",
+      "title": "Taj Group Real Estate Office",
+      "location": "NAVI MUMBAI",
+      "category": "Interior",
+      "image": "/portfolio/taj-group-real-estate-office-navi-mumbai-2.jpg",
+      "page": 92
+    },
+    {
+      "slug": "abil-avanti-pune",
+      "title": "ABIL AVANTI",
+      "location": "PUNE",
+      "category": "Interior",
+      "image": "/portfolio/abil-avanti-pune.jpg",
+      "page": 93
+    },
+    {
+      "slug": "super-select-luxury-car-showroom-hyderabad",
+      "title": "Super Select - Luxury Car Showroom",
+      "location": "HYDERABAD",
+      "category": "Interior",
+      "image": "/portfolio/super-select-luxury-car-showroom-hyderabad.jpg",
+      "page": 94
+    },
+    {
+      "slug": "super-select-luxury-car-showroom-hyderabad-2",
+      "title": "Super Select - Luxury Car Showroom",
+      "location": "HYDERABAD",
+      "category": "Interior",
+      "image": "/portfolio/super-select-luxury-car-showroom-hyderabad-2.jpg",
+      "page": 95
+    }
+  ],
+  "clients": [
+    {
+      "src": "/clients/client-00.png",
+      "w": 149,
+      "h": 112,
+      "px": [
+        168,
+        139
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-01.png",
+      "w": 342,
+      "h": 86,
+      "px": [
+        520,
+        130
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-02.png",
+      "w": 238,
+      "h": 238,
+      "px": [
+        203,
+        130
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-03.png",
+      "w": 212,
+      "h": 212,
+      "px": [
+        191,
+        245
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-04.png",
+      "w": 219,
+      "h": 100,
+      "px": [
+        210,
+        98
+      ],
+      "tint": null,
+      "group": "International"
+    },
+    {
+      "src": "/clients/client-05.png",
+      "w": 168,
+      "h": 94,
+      "px": [
+        270,
+        152
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-06.png",
+      "w": 177,
+      "h": 177,
+      "px": [
+        302,
+        301
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-07.png",
+      "w": 171,
+      "h": 86,
+      "px": [
+        339,
+        165
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-08.png",
+      "w": 262,
+      "h": 263,
+      "px": [
+        224,
+        225
+      ],
+      "tint": "#000000",
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-09.png",
+      "w": 165,
+      "h": 89,
+      "px": [
+        308,
+        179
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-10.png",
+      "w": 290,
+      "h": 76,
+      "px": [
+        520,
+        118
+      ],
+      "tint": null,
+      "group": "International"
+    },
+    {
+      "src": "/clients/client-11.png",
+      "w": 250,
+      "h": 250,
+      "px": [
+        401,
+        179
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-12.png",
+      "w": 169,
+      "h": 88,
+      "px": [
+        270,
+        93
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-13.png",
+      "w": 144,
+      "h": 144,
+      "px": [
+        288,
+        288
+      ],
+      "tint": "#0a70ba",
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-14.png",
+      "w": 112,
+      "h": 146,
+      "px": [
+        226,
+        291
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-15.png",
+      "w": 78,
+      "h": 102,
+      "px": [
+        149,
+        204
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-16.png",
+      "w": 131,
+      "h": 97,
+      "px": [
+        221,
+        163
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-17.png",
+      "w": 93,
+      "h": 142,
+      "px": [
+        129,
+        185
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-18.png",
+      "w": 110,
+      "h": 110,
+      "px": [
+        120,
+        175
+      ],
+      "tint": null,
+      "group": "International"
+    },
+    {
+      "src": "/clients/client-19.png",
+      "w": 168,
+      "h": 168,
+      "px": [
+        225,
+        145
+      ],
+      "tint": null,
+      "group": "International"
+    },
+    {
+      "src": "/clients/client-20.png",
+      "w": 98,
+      "h": 133,
+      "px": [
+        162,
+        192
+      ],
+      "tint": null,
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-21.png",
+      "w": 136,
+      "h": 141,
+      "px": [
+        284,
+        296
+      ],
+      "tint": "#0c0c0c",
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-22.png",
+      "w": 140,
+      "h": 157,
+      "px": [
+        244,
+        272
+      ],
+      "tint": "#fffde6",
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-23.png",
+      "w": 139,
+      "h": 102,
+      "px": [
+        277,
+        204
+      ],
+      "tint": "#29282b",
+      "group": "Pan India"
+    },
+    {
+      "src": "/clients/client-24.png",
+      "w": 154,
+      "h": 154,
+      "px": [
+        163,
+        196
+      ],
+      "tint": null,
+      "group": "Pan India"
+    }
+  ],
+  "office": [
+    "/studio/office-00.jpg",
+    "/studio/office-01.jpg",
+    "/studio/office-02.jpg",
+    "/studio/office-03.jpg",
+    "/studio/office-04.jpg",
+    "/studio/office-05.jpg",
+    "/studio/office-06.jpg",
+    "/studio/office-07.jpg",
+    "/studio/office-08.jpg"
+  ],
+  "team": [
+    "/team/member-04.jpg",
+    "/team/member-05.jpg",
+    "/team/member-06.jpg",
+    "/team/member-07.jpg",
+    "/team/member-08.jpg",
+    "/team/member-09.jpg",
+    "/team/member-10.jpg",
+    "/team/member-11.jpg",
+    "/team/member-12.jpg",
+    "/team/member-13.jpg",
+    "/team/member-14.jpg",
+    "/team/member-15.jpg",
+    "/team/member-16.jpg",
+    "/team/member-17.jpg",
+    "/team/member-18.jpg",
+    "/team/member-19.jpg"
+  ],
+  "founderPortraits": {
+    "shaheer-tungekar": "/team/shaheer-tungekar.jpg",
+    "umar-kazi": "/team/umar-kazi.jpg"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "slug": "yamai-lake",
+  "frameCount": 120,
+  "width": 1280,
+  "height": 720,
+  "segment": {
+    "start": 12,
+    "duration": 45
+  }
+}

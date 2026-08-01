@@ -1,0 +1,10 @@
+{
+  "slug": "ss-villa-lucknow",
+  "frameCount": 120,
+  "width": 1280,
+  "height": 720,
+  "segment": {
+    "start": 10,
+    "duration": 45
+  }
+}

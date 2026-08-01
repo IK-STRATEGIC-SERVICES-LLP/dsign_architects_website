@@ -1,0 +1,114 @@
+import type { Metadata } from "next";
+import { Cormorant_Garamond, Inter } from "next/font/google";
+import { INSTAGRAM_URL, MAPS_URL } from "@/lib/contact";
+import "./globals.css";
+
+// Titles: a high-contrast old-style serif, standing in for the Tan Aegean
+// look. Loaded from 300 so headings can run light at display sizes without
+// the synthetic thinning a browser would otherwise apply.
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  display: "swap",
+});
+
+// Subtitles and body: a neutral grotesque, so long descriptions and the
+// tracked-out uppercase labels stay legible instead of competing with the
+// display face.
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const SITE_URL = "https://www.dsignarchitects.com";
+const SITE_TITLE = "D'sign Architects — Architecture, Interiors & EPC Delivery";
+const SITE_DESCRIPTION =
+  "Founded in 2015, D'sign Architects is a Pune-based multidisciplinary practice offering architecture, structural and MEP design, interiors, landscape, master planning, project management and full EPC delivery across India and overseas.";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "D'Sign Architects",
+    "architecture firm Pune",
+    "architects in Pune",
+    "interior design Pune",
+    "structural design",
+    "project management",
+    "residential architecture",
+    "commercial architecture",
+  ],
+  authors: [{ name: "D'Sign Architects" }],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: SITE_URL,
+    siteName: "D'Sign Architects",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+};
+
+const ORGANIZATION_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Architect",
+  name: "D'Sign Architects",
+  description: SITE_DESCRIPTION,
+  url: SITE_URL,
+  email: "dsignarchitects@outlook.com",
+  telephone: "+91-20-48616777",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "G-7, Ashoka Pavillion, Dr. Ambedkar Road, Camp",
+    addressLocality: "Pune",
+    addressRegion: "Maharashtra",
+    postalCode: "411001",
+    addressCountry: "IN",
+  },
+  areaServed: "IN",
+  priceRange: "$$",
+  hasMap: MAPS_URL,
+  sameAs: [INSTAGRAM_URL],
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${cormorant.variable} ${inter.variable} h-full scroll-smooth antialiased`}
+    >
+      <body className="min-h-full flex flex-col bg-ink text-porcelain">
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
+        />
+        {children}
+      </body>
+    </html>
+  );
+}

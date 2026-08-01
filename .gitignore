@@ -1,0 +1,62 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# AI tooling skill packs — several hundred files of third-party reference
+# material that have nothing to do with the site. The dev-server launch
+# config is genuinely project setup, so that one stays.
+/.agents/
+/.cursor/
+/.claude/*
+!/.claude/launch.json
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Studio master assets — source of truth, kept locally only.
+# These are hundreds of MB each and must never be committed or served:
+# anything under public/ is deployed verbatim. The web-ready derivatives
+# in public/media (built by scripts/build-media.mjs) ARE committed.
+# Note the trailing /* rather than /: git refuses to re-include anything
+# inside an excluded *directory*, so excluding the directory itself would
+# make the queens_tower exception below silently do nothing.
+/public/videos/*
+/public/pdf/
+# ...but Queens Tower's renders and short clip are web-ready assets the site
+# actually serves, so they must stay tracked.
+!/public/videos/queens_tower/
