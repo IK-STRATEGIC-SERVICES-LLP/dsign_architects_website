@@ -13,6 +13,7 @@ Run:  python scripts/extract-pdf-assets.py
 Requires PyMuPDF (already present) and Pillow.
 """
 
+import hashlib
 import io
 import json
 import re
@@ -170,6 +171,24 @@ def _trim_white_margin(img: Image.Image, threshold: int = 242) -> Image.Image:
     return img.crop(box)
 
 
+def hash_into_name(path: Path) -> Path:
+    """Rename a saved file to carry a short hash of its own contents.
+
+    Rewriting a logo in place leaves its URL unchanged, so every cache in the
+    chain keeps serving the previous artwork — Chrome's image memory cache
+    above all, which survives an ordinary reload. Folding the hash into the
+    filename means corrected artwork arrives at a URL nothing has cached.
+
+    The hash goes in the *name* rather than a `?v=` query because Next 16
+    rejects query strings on local images unless every local image path on
+    the site is whitelisted in `images.localPatterns`.
+    """
+    digest = hashlib.sha1(path.read_bytes()).hexdigest()[:8]
+    final = path.with_name(f"{path.stem}.{digest}{path.suffix}")
+    path.replace(final)
+    return final
+
+
 def background_tint(img: Image.Image) -> str | None:
     """The solid colour a logo is drawn on, or None if it has no such canvas.
 
@@ -221,7 +240,7 @@ def save_logo(
     dest: Path,
     mask_raw: bytes | None = None,
     max_width: int = 520,
-) -> tuple[int, int, str | None]:
+) -> tuple[int, int, str | None, str]:
     """Save a client logo exactly as it appears in the profile.
 
     Nothing is keyed out or recoloured here: several marks carry their
@@ -260,7 +279,7 @@ def save_logo(
 
     dest.parent.mkdir(parents=True, exist_ok=True)
     img.save(dest, "PNG", optimize=True)
-    return img.width, img.height, background_tint(img)
+    return img.width, img.height, background_tint(img), hash_into_name(dest).name
 
 
 def main() -> None:
@@ -301,6 +320,10 @@ def main() -> None:
     # tile instead of a patchwork of black and white rectangles.
     clients_page = doc[CLIENTS_PAGE - 1]
     logos = []
+    # Names carry a content hash, so a re-run leaves the previous hash behind
+    # as an orphan unless the old ones are cleared first.
+    for stale in OUT_CLIENTS.glob("client-*.png"):
+        stale.unlink()
     # The page separates "PAN INDIA CLIENTS" from "INTERNATIONAL CLIENTS";
     # anything sitting below the international heading belongs to it.
     intl_heading = clients_page.search_for("INTERNATIONAL CLIENTS")
@@ -321,7 +344,7 @@ def main() -> None:
             except Exception:
                 mask_raw = None
         dest = OUT_CLIENTS / f"client-{i:02d}.png"
-        px_w, px_h, tint = save_logo(data["image"], dest, mask_raw)
+        px_w, px_h, tint, filename = save_logo(data["image"], dest, mask_raw)
         # Record how large the logo is drawn on the page. Normalising every
         # mark into one box flattens the careful size relationships in the
         # original layout, so the site scales them from these figures.
@@ -333,7 +356,7 @@ def main() -> None:
         )
         logos.append(
             {
-                "src": f"/clients/client-{i:02d}.png",
+                "src": f"/clients/{filename}",
                 "w": w_pt,
                 "h": h_pt,
                 "px": [px_w, px_h],

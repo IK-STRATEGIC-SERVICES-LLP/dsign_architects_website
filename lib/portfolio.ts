@@ -76,6 +76,13 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = (() => {
  * the original layout instead of squashing every mark into one box.
  */
 export type ClientLogo = {
+  /**
+   * Filename carries a content hash (`client-16.a1b2c3d4.png`), so corrected
+   * artwork always arrives at a URL nothing has cached. Rewriting a logo in
+   * place used to leave its URL unchanged, and Chrome's image memory cache
+   * holds a decoded copy across an ordinary reload — so the old version kept
+   * showing long after the file was fixed.
+   */
   src: string;
   w: number;
   h: number;
