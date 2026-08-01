@@ -61,14 +61,14 @@ export function ProjectsCarousel({ projects, interval = 4000 }: Props) {
             key={`left-left-${getIndex(-2)}`}
             initial={false}
             animate={{
-              opacity: 0.2,
-              x: -240,
-              y: 24,
-              scale: 0.6,
+              opacity: 0.15,
+              x: -380,
+              y: 30,
+              scale: 0.5,
               zIndex: 0
             }}
             transition={{ duration: 0.6, ease: easeLuxe }}
-            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/4"
+            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/5"
             style={{ willChange: 'transform' }}
           >
             <Link
@@ -91,14 +91,14 @@ export function ProjectsCarousel({ projects, interval = 4000 }: Props) {
             key={`left-${getIndex(-1)}`}
             initial={false}
             animate={{
-              opacity: 0.5,
-              x: -120,
-              y: 12,
-              scale: 0.8,
+              opacity: 0.4,
+              x: -260,
+              y: 16,
+              scale: 0.65,
               zIndex: 2
             }}
             transition={{ duration: 0.6, ease: easeLuxe }}
-            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/3"
+            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/4"
             style={{ willChange: 'transform' }}
           >
             <Link
@@ -128,7 +128,7 @@ export function ProjectsCarousel({ projects, interval = 4000 }: Props) {
               zIndex: 5
             }}
             transition={{ duration: 0.6, ease: easeLuxe }}
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-full lg:w-2/5"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-full lg:w-7/12"
             style={{ willChange: 'transform' }}
           >
             <Link
@@ -139,7 +139,7 @@ export function ProjectsCarousel({ projects, interval = 4000 }: Props) {
                 src={getProject(activeIndex).image}
                 alt={`${getProject(activeIndex).title} — ${getProject(activeIndex).location}`}
                 fill
-                sizes="(min-width: 1024px) 40vw, 100vw"
+                sizes="(min-width: 1024px) 58vw, 100vw"
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 priority
               />
@@ -173,14 +173,14 @@ export function ProjectsCarousel({ projects, interval = 4000 }: Props) {
             key={`right-${getIndex(1)}`}
             initial={false}
             animate={{
-              opacity: 0.5,
-              x: 120,
-              y: 12,
-              scale: 0.8,
+              opacity: 0.4,
+              x: 260,
+              y: 16,
+              scale: 0.65,
               zIndex: 2
             }}
             transition={{ duration: 0.6, ease: easeLuxe }}
-            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/3"
+            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/4"
             style={{ willChange: 'transform' }}
           >
             <Link
@@ -203,14 +203,14 @@ export function ProjectsCarousel({ projects, interval = 4000 }: Props) {
             key={`right-right-${getIndex(2)}`}
             initial={false}
             animate={{
-              opacity: 0.2,
-              x: 240,
-              y: 24,
-              scale: 0.6,
+              opacity: 0.15,
+              x: 380,
+              y: 30,
+              scale: 0.5,
               zIndex: 0
             }}
             transition={{ duration: 0.6, ease: easeLuxe }}
-            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/4"
+            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/5"
             style={{ willChange: 'transform' }}
           >
             <Link
