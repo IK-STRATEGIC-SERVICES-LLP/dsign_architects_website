@@ -50,6 +50,7 @@ export default async function ProjectPage({
           <ScrollScrubClient
             slug={project.media.slug}
             frameCount={project.media.frameCount}
+            startFrame={project.media.startFrame}
             poster={project.image}
             scrollLength={3.5}
             chapters={[{ kicker: project.category, title: project.title }]}

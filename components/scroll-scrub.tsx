@@ -20,6 +20,12 @@ export type ScrollScrubProps = {
   frameCount: number;
   poster: string;
   chapters?: Chapter[];
+  /**
+   * Frame the scrub opens on, for films whose first second or two is a
+   * title card rather than the work. Everything before it is neither shown
+   * nor downloaded.
+   */
+  startFrame?: number;
   /** Section height as a multiple of the viewport — controls scrub length. */
   scrollLength?: number;
   /** Shown once the sequence finishes, e.g. to hint at the section below. */
@@ -39,10 +45,12 @@ export function ScrollScrub({
   frameCount,
   poster,
   chapters = [],
+  startFrame = 0,
   scrollLength = 3.5,
   showScrollCue = true,
   className,
 }: ScrollScrubProps) {
+  const first = Math.min(Math.max(0, startFrame), frameCount - 1);
   const reduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -96,15 +104,16 @@ export function ScrollScrub({
     (async () => {
       const stride = 8;
       const coarse: number[] = [];
-      for (let i = 0; i < frameCount; i += stride) coarse.push(i);
+      for (let i = first; i < frameCount; i += stride) coarse.push(i);
       await Promise.all(coarse.map(load));
       if (cancelled) return;
       setReady(true);
       drawnRef.current = -1;
 
-      const rest = Array.from({ length: frameCount }, (_, i) => i).filter(
-        (i) => i % stride !== 0
-      );
+      const rest = Array.from(
+        { length: frameCount - first },
+        (_, i) => i + first
+      ).filter((i) => !coarse.includes(i));
       // Small concurrent batches keep the network busy without stalling
       // interaction on the main thread.
       const size = 12;
@@ -117,7 +126,7 @@ export function ScrollScrub({
     return () => {
       cancelled = true;
     };
-  }, [slug, frameCount, lite]);
+  }, [slug, frameCount, lite, first]);
 
   // Progress is measured from the section's live bounding rect rather than
   // framer's useScroll: this component mounts late (client-only import),
@@ -168,13 +177,15 @@ export function ScrollScrub({
 
       const target = Math.min(
         frameCount - 1,
-        Math.round(progressRef.current * (frameCount - 1))
+        first + Math.round(progressRef.current * (frameCount - 1 - first))
       );
       // Nearest already-loaded frame, so gaps during backfill never blank out.
+      // The search stays at or after `first` so a trimmed title card can't be
+      // pulled back in as the nearest neighbour.
       let index = target;
       if (!imagesRef.current[index]) {
         for (let d = 1; d < frameCount; d++) {
-          if (imagesRef.current[target - d]) {
+          if (target - d >= first && imagesRef.current[target - d]) {
             index = target - d;
             break;
           }
@@ -210,7 +221,7 @@ export function ScrollScrub({
 
     rafRef.current = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [lite, ready, frameCount]);
+  }, [lite, ready, frameCount, first]);
 
   const activeChapter = chapter >= 0 ? chapters[chapter] : undefined;
 
@@ -228,7 +239,7 @@ export function ScrollScrub({
             mode keeps the poster, since there it is the whole experience
             and an opening title card would make a poor hero. */}
         <Image
-          src={lite ? poster : framePath(slug, 0)}
+          src={lite ? poster : framePath(slug, first)}
           alt=""
           fill
           priority

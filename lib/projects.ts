@@ -9,8 +9,11 @@ export type Project = {
   image: string;
   description: string;
   highlights: string[];
-  /** Folder under /public/media holding the scroll-scrub frame sequence. */
-  media?: { slug: string; frameCount: number };
+  /**
+   * Folder under /public/media holding the scroll-scrub frame sequence.
+   * `startFrame` skips a leading title card where the film opens on one.
+   */
+  media?: { slug: string; frameCount: number; startFrame?: number };
   /** Equirectangular 360° image (2:1), self-hosted under /public/panoramas. */
   panorama?: string;
 };
@@ -78,7 +81,9 @@ export const PROJECTS: Project[] = [
       "Sunken bonfire sit-out and water-edge barbeque deck",
       "Six bedrooms across ground and first floors",
     ],
-    media: { slug: "nashik-villa", frameCount: 120 },
+    // Opens on a card naming the private clients this house was built for,
+    // which is not ours to publish — start once it has cleared.
+    media: { slug: "nashik-villa", frameCount: 120, startFrame: 12 },
   },
   {
     slug: "apti-hillside-estate",
