@@ -30,16 +30,15 @@ export function ProjectsCarousel({ projects, interval = 4000 }: Props) {
     return () => clearInterval(id);
   }, [running, interval, projects.length]);
 
-  const prevIndex = (activeIndex - 1 + projects.length) % projects.length;
-  const nextIndex = (activeIndex + 1) % projects.length;
+  const getIndex = (offset: number) => (activeIndex + offset + projects.length) % projects.length;
 
   const handlePrev = () => {
-    setActiveIndex(prevIndex);
+    setActiveIndex((i) => (i - 1 + projects.length) % projects.length);
     setPaused(true);
   };
 
   const handleNext = () => {
-    setActiveIndex(nextIndex);
+    setActiveIndex((i) => (i + 1) % projects.length);
     setPaused(true);
   };
 
@@ -54,49 +53,93 @@ export function ProjectsCarousel({ projects, interval = 4000 }: Props) {
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      {/* Three-item carousel container */}
-      <div className="relative h-[350px] sm:h-[450px] lg:h-[500px] w-full overflow-hidden">
-        <div className="relative h-full w-full flex items-center justify-center gap-3 lg:gap-4">
-          {/* Left project (peek) */}
+      {/* Five-item carousel container with depth effect */}
+      <div className="relative h-[400px] sm:h-[500px] lg:h-[550px] w-full" style={{ overflow: 'visible' }}>
+        <div className="relative h-full w-full px-4 lg:px-0" style={{ perspective: '1000px' }}>
+          {/* Left-Left project (back left, most blurred) */}
           <motion.div
-            key={`left-${prevIndex}`}
+            key={`left-left-${getIndex(-2)}`}
             initial={false}
-            animate={{ opacity: 0.5, scale: 0.75 }}
+            animate={{
+              opacity: 0.2,
+              x: -240,
+              y: 24,
+              scale: 0.6,
+              zIndex: 0
+            }}
             transition={{ duration: 0.6, ease: easeLuxe }}
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-full w-1/4 pointer-events-none lg:relative lg:pointer-events-auto lg:w-1/4 lg:-translate-y-0"
+            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/4"
+            style={{ willChange: 'transform' }}
           >
             <Link
-              href={`/projects/${getProject(prevIndex).slug}`}
-              className="group relative block h-full w-full overflow-hidden rounded-2xl border border-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+              href={`/projects/${getProject(getIndex(-2)).slug}`}
+              className="group relative block h-full w-full overflow-hidden rounded-2xl border border-white/10"
             >
               <Image
-                src={getProject(prevIndex).image}
-                alt={`${getProject(prevIndex).title} — ${getProject(prevIndex).location}`}
+                src={getProject(getIndex(-2)).image}
+                alt={`${getProject(getIndex(-2)).title}`}
                 fill
-                sizes="(min-width: 1024px) 25vw, 20vw"
-                className="object-cover"
+                sizes="(min-width: 1024px) 25vw, 0"
+                className="object-cover blur-sm"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/50 to-transparent" />
             </Link>
           </motion.div>
 
-          {/* Center project (main) */}
+          {/* Left project (front left, slightly blurred) */}
+          <motion.div
+            key={`left-${getIndex(-1)}`}
+            initial={false}
+            animate={{
+              opacity: 0.5,
+              x: -120,
+              y: 12,
+              scale: 0.8,
+              zIndex: 2
+            }}
+            transition={{ duration: 0.6, ease: easeLuxe }}
+            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/3"
+            style={{ willChange: 'transform' }}
+          >
+            <Link
+              href={`/projects/${getProject(getIndex(-1)).slug}`}
+              className="group relative block h-full w-full overflow-hidden rounded-2xl border border-white/10"
+            >
+              <Image
+                src={getProject(getIndex(-1)).image}
+                alt={`${getProject(getIndex(-1)).title}`}
+                fill
+                sizes="(min-width: 1024px) 33vw, 0"
+                className="object-cover blur-xs"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" />
+            </Link>
+          </motion.div>
+
+          {/* Center project (main, sharp and prominent) */}
           <motion.div
             key={`center-${activeIndex}`}
             initial={false}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={{
+              opacity: 1,
+              x: 0,
+              y: 0,
+              scale: 1,
+              zIndex: 5
+            }}
             transition={{ duration: 0.6, ease: easeLuxe }}
-            className="relative h-full flex-shrink-0 w-full lg:w-1/2"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-full lg:w-2/5"
+            style={{ willChange: 'transform' }}
           >
             <Link
               href={`/projects/${getProject(activeIndex).slug}`}
-              className="group relative block h-full w-full overflow-hidden rounded-3xl border border-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+              className="group relative block h-full w-full overflow-hidden rounded-3xl border-2 border-white/20 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold shadow-2xl"
             >
               <Image
                 src={getProject(activeIndex).image}
                 alt={`${getProject(activeIndex).title} — ${getProject(activeIndex).location}`}
                 fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
+                sizes="(min-width: 1024px) 40vw, 100vw"
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 priority
               />
@@ -125,32 +168,69 @@ export function ProjectsCarousel({ projects, interval = 4000 }: Props) {
             </Link>
           </motion.div>
 
-          {/* Right project (peek) */}
+          {/* Right project (front right, slightly blurred) */}
           <motion.div
-            key={`right-${nextIndex}`}
+            key={`right-${getIndex(1)}`}
             initial={false}
-            animate={{ opacity: 0.5, scale: 0.75 }}
+            animate={{
+              opacity: 0.5,
+              x: 120,
+              y: 12,
+              scale: 0.8,
+              zIndex: 2
+            }}
             transition={{ duration: 0.6, ease: easeLuxe }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-1/4 pointer-events-none lg:relative lg:pointer-events-auto lg:w-1/4 lg:-translate-y-0"
+            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/3"
+            style={{ willChange: 'transform' }}
           >
             <Link
-              href={`/projects/${getProject(nextIndex).slug}`}
-              className="group relative block h-full w-full overflow-hidden rounded-2xl border border-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+              href={`/projects/${getProject(getIndex(1)).slug}`}
+              className="group relative block h-full w-full overflow-hidden rounded-2xl border border-white/10"
             >
               <Image
-                src={getProject(nextIndex).image}
-                alt={`${getProject(nextIndex).title} — ${getProject(nextIndex).location}`}
+                src={getProject(getIndex(1)).image}
+                alt={`${getProject(getIndex(1)).title}`}
                 fill
-                sizes="(min-width: 1024px) 25vw, 20vw"
-                className="object-cover"
+                sizes="(min-width: 1024px) 33vw, 0"
+                className="object-cover blur-xs"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" />
+            </Link>
+          </motion.div>
+
+          {/* Right-Right project (back right, most blurred) */}
+          <motion.div
+            key={`right-right-${getIndex(2)}`}
+            initial={false}
+            animate={{
+              opacity: 0.2,
+              x: 240,
+              y: 24,
+              scale: 0.6,
+              zIndex: 0
+            }}
+            transition={{ duration: 0.6, ease: easeLuxe }}
+            className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-1/4"
+            style={{ willChange: 'transform' }}
+          >
+            <Link
+              href={`/projects/${getProject(getIndex(2)).slug}`}
+              className="group relative block h-full w-full overflow-hidden rounded-2xl border border-white/10"
+            >
+              <Image
+                src={getProject(getIndex(2)).image}
+                alt={`${getProject(getIndex(2)).title}`}
+                fill
+                sizes="(min-width: 1024px) 25vw, 0"
+                className="object-cover blur-sm"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/50 to-transparent" />
             </Link>
           </motion.div>
         </div>
 
         {/* Navigation arrows */}
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 pointer-events-none flex justify-between px-2 lg:px-4 z-10">
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 pointer-events-none flex justify-between px-2 lg:px-4 z-20">
           <motion.button
             type="button"
             onClick={handlePrev}
