@@ -138,12 +138,22 @@ export function ScrollScrub({
       );
       setCueVisible(p < 0.06);
     };
+    // The paint loop skips the canvas whenever the target frame is already
+    // drawn, and it only resizes the backing store on a frame it actually
+    // paints. So a viewport change while the frame holds steady would leave
+    // the picture stretched — which is what mobile does mid-scroll every
+    // time the address bar slides away. Forcing a repaint keeps it honest.
+    const onResize = () => {
+      drawnRef.current = -1;
+      update();
+    };
+
     update();
     window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
+    window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      window.removeEventListener("resize", onResize);
     };
   }, [chapters.length]);
 
@@ -211,9 +221,14 @@ export function ScrollScrub({
       style={{ height: lite ? "100svh" : `${scrollLength * 100}vh` }}
     >
       <div className="sticky top-0 h-svh w-full overflow-hidden">
-        {/* Poster: first paint, and the whole experience in lite mode. */}
+        {/* First paint. Where the sequence will actually run, this is the
+            sequence's own opening frame, so the hand-off to the canvas is
+            invisible — the poster is a still from partway through the film,
+            and crossfading from that to frame one read as a glitch. Lite
+            mode keeps the poster, since there it is the whole experience
+            and an opening title card would make a poor hero. */}
         <Image
-          src={poster}
+          src={lite ? poster : framePath(slug, 0)}
           alt=""
           fill
           priority
@@ -233,14 +248,18 @@ export function ScrollScrub({
           />
         ) : null}
 
-        {/* Cinematic grade so overlaid type always stays legible. */}
+        {/* Cinematic grade so overlaid type always stays legible. Weighted to
+            the edges rather than laid evenly over the picture: captions sit
+            along the bottom and the navbar along the top, so those are the
+            only bands that need holding down. The middle is left clear so
+            the render reads at the brightness it was exported at. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/20 to-ink"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/45 via-transparent to-ink"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(8,13,23,0.7)_100%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_58%,rgba(8,13,23,0.45)_100%)]"
         />
         <div className="grain-overlay" />
 
