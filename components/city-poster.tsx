@@ -225,49 +225,81 @@ export function CityPoster({ onEnter }: { onEnter?: () => void } = {}) {
         }}
       />
 
-      <div className="relative flex h-full flex-col items-center justify-between px-6 py-10 sm:py-14">
-        <motion.h1
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center font-display text-2xl font-light tracking-[0.42em] text-porcelain sm:text-4xl"
-        >
-          MUMBAI &amp; PUNE
-        </motion.h1>
-
+      <div className="relative flex h-full flex-col items-center justify-center px-6 py-10 sm:py-14">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 16, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col items-center gap-5"
+          className="flex flex-col items-center gap-8"
         >
-          {/* As an overlay on the home page this only has to dismiss itself;
-              standalone at /launch it has somewhere to go. */}
-          {onEnter ? (
-            <button
-              type="button"
-              onClick={onEnter}
-              className="group flex cursor-pointer flex-col items-center gap-5 rounded-3xl px-8 py-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
-            >
-              <Logo size="xl" />
-              <span className="inline-flex items-center gap-2 rounded-full glass-gold px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-gold transition-colors duration-300 group-hover:bg-white/10">
+          {/* Enhanced logo container with better visibility */}
+          <div className="relative rounded-3xl px-8 py-6 backdrop-blur-lg"
+            style={{
+              background: "radial-gradient(ellipse at center, rgba(32,42,65,0.85) 0%, rgba(8,13,23,0.7) 100%)",
+              border: "1px solid rgba(217, 164, 65, 0.15)",
+              boxShadow: "0 0 40px rgba(217, 164, 65, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.02)"
+            }}>
+            {/* As an overlay on the home page this only has to dismiss itself;
+                standalone at /launch it has somewhere to go. */}
+            {onEnter ? (
+              <button
+                type="button"
+                onClick={onEnter}
+                className="group flex cursor-pointer flex-col items-center gap-6 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold transition-transform duration-300 hover:scale-105"
+              >
+                <Logo size="xl" />
+              </button>
+            ) : (
+              <Link
+                href="/"
+                className="group flex flex-col items-center gap-6 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold transition-transform duration-300 hover:scale-105"
+              >
+                <Logo size="xl" />
+              </Link>
+            )}
+          </div>
+
+          {/* Location text below logo */}
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.8, ease: [0.22, 1, 0.36, 1] }}
+            className="text-center font-display text-2xl font-light tracking-[0.42em] text-porcelain sm:text-4xl"
+          >
+            MUMBAI &amp; PUNE
+          </motion.h1>
+
+          {/* CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 2.2, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {onEnter ? (
+              <button
+                type="button"
+                onClick={onEnter}
+                className="inline-flex items-center gap-2 rounded-full glass-gold px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-gold transition-colors duration-300 hover:bg-white/10"
+              >
                 Enter Site
-              </span>
-            </button>
-          ) : (
-            <Link
-              href="/"
-              className="group flex flex-col items-center gap-5 rounded-3xl px-8 py-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
-            >
-              <Logo size="xl" />
-              <span className="inline-flex items-center gap-2 rounded-full glass-gold px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-gold transition-colors duration-300 group-hover:bg-white/10">
+              </button>
+            ) : (
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 rounded-full glass-gold px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-gold transition-colors duration-300 hover:bg-white/10"
+              >
                 Enter Site
-              </span>
-            </Link>
-          )}
-          <p className="text-[9px] uppercase tracking-[0.2em] text-mist/40">
+              </Link>
+            )}
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 2.6 }}
+            className="text-[9px] uppercase tracking-[0.2em] text-mist/40">
             Street data © OpenStreetMap contributors
-          </p>
+          </motion.p>
         </motion.div>
       </div>
     </main>
