@@ -75,11 +75,11 @@ export function CTA() {
                 />
               </a>
               <a
-                href="tel:+912048616777"
+                href={STUDIO_PHONE_HREF}
                 className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full glass-gold px-8 py-4 text-sm font-semibold text-porcelain transition-colors duration-200 hover:bg-white/10 hover:border-gold/50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
               >
                 <Phone className="h-4 w-4" aria-hidden />
-                020 - 48616777
+                {STUDIO_PHONE}
               </a>
             </div>
           </div>

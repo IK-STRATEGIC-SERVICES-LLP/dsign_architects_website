@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { BlueprintSheet } from "@/components/blueprint-sheet";
 import { INSTAGRAM_URL, MAPS_URL } from "@/lib/contact";
 import "./globals.css";
 
@@ -76,13 +77,14 @@ const ORGANIZATION_JSON_LD = {
   description: SITE_DESCRIPTION,
   url: SITE_URL,
   email: "dsignarchitects@outlook.com",
-  telephone: "+91-20-48616777",
+  telephone: "+91-9607697369",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "G-7, Ashoka Pavillion, Dr. Ambedkar Road, Camp",
+    streetAddress:
+      "Flat no 201, Leena Manik Apartment, near Shantai Hotel, Rasta Peth",
     addressLocality: "Pune",
     addressRegion: "Maharashtra",
-    postalCode: "411001",
+    postalCode: "411011",
     addressCountry: "IN",
   },
   areaServed: "IN",
@@ -107,6 +109,18 @@ export default function RootLayout({
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
         />
+        {/* Runs before first paint so a visitor who has already entered this
+            session never sees the launch poster flash. Injects a style rule
+            rather than setting an attribute on <html> — React hydrates and
+            diffs that element, and an attribute we added behind its back
+            reads to it as a server/client mismatch. */}
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem('dsign-launch-seen')){var s=document.createElement('style');s.setAttribute('data-launch-skip','');s.textContent='.launch-gate{display:none!important}';document.head.appendChild(s);}}catch(e){}`,
+          }}
+        />
+        <BlueprintSheet />
         {children}
       </body>
     </html>

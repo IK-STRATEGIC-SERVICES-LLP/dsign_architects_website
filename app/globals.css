@@ -68,6 +68,292 @@ body {
   -webkit-backdrop-filter: blur(28px);
 }
 
+/* Drafting sheet — a faint orthographic grid the editorial sections sit on.
+   Fixed and behind everything, so the cinematic sections (scroll-scrub, hero,
+   the projects helix, cta) paint their own bg-ink straight over it and the
+   photography stays clean. Fine cell 88px, heavier rule every 5th. */
+.blueprint-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+  --sheet-y: 0px;
+  /* Parked off-screen so the spotlight stays dark until the pointer moves. */
+  --mx: -1000px;
+  --my: -1000px;
+}
+
+.blueprint-sheet__grid,
+.blueprint-sheet__glow {
+  position: absolute;
+  inset: 0;
+  background-position: 50% var(--sheet-y);
+  background-image:
+    /* heavy rule every fifth line, in gold */
+    repeating-linear-gradient(
+      to right,
+      rgba(217, 164, 65, 0.045) 0 1px,
+      transparent 1px 440px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(217, 164, 65, 0.045) 0 1px,
+      transparent 1px 440px
+    ),
+    /* fine cell */
+    repeating-linear-gradient(
+        to right,
+        rgba(243, 245, 248, 0.022) 0 1px,
+        transparent 1px 88px
+      ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(243, 245, 248, 0.022) 0 1px,
+      transparent 1px 88px
+    );
+}
+
+/* Soften toward the edges so the grid never meets the viewport as a hard
+   ruled line — same vignette language as the cinematic sections. */
+.blueprint-sheet__grid {
+  -webkit-mask-image: radial-gradient(
+    ellipse 105% 80% at 50% 45%,
+    #000 35%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 105% 80% at 50% 45%,
+    #000 35%,
+    transparent 100%
+  );
+}
+
+/* The same sheet at reading strength, revealed only under the cursor. */
+.blueprint-sheet__glow {
+  background-image:
+    radial-gradient(
+      circle 260px at var(--mx) var(--my),
+      rgba(217, 164, 65, 0.03),
+      transparent 70%
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(217, 164, 65, 0.1) 0 1px,
+      transparent 1px 440px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(217, 164, 65, 0.1) 0 1px,
+      transparent 1px 440px
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(243, 245, 248, 0.05) 0 1px,
+      transparent 1px 88px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(243, 245, 248, 0.05) 0 1px,
+      transparent 1px 88px
+    );
+  background-position:
+    0 0,
+    50% var(--sheet-y),
+    50% var(--sheet-y),
+    50% var(--sheet-y),
+    50% var(--sheet-y);
+  -webkit-mask-image: radial-gradient(
+    circle 260px at var(--mx) var(--my),
+    #000 0%,
+    transparent 70%
+  );
+  mask-image: radial-gradient(
+    circle 260px at var(--mx) var(--my),
+    #000 0%,
+    transparent 70%
+  );
+}
+
+/* Grid reference callouts, as on a drawing sheet */
+.blueprint-sheet__cols,
+.blueprint-sheet__rows {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: rgba(217, 164, 65, 0.25);
+}
+
+.blueprint-sheet__cols span {
+  position: absolute;
+  /* clears the fixed navbar */
+  top: 104px;
+}
+
+.blueprint-sheet__rows span {
+  position: absolute;
+  left: 14px;
+  transform: translateY(var(--sheet-y));
+}
+
+/* Plan linework — a feature backdrop for a couple of editorial sections.
+   Weights are set so the drawing reads as texture, never as content. */
+.plan-linework {
+  position: absolute;
+  pointer-events: none;
+  color: var(--porcelain);
+  /* Soft vignette so the drawing has no hard cut at the section edges. */
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 70% at 50% 50%,
+    #000 30%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 80% 70% at 50% 50%,
+    #000 30%,
+    transparent 100%
+  );
+}
+
+.plan-linework .plan-wall {
+  fill: rgba(243, 245, 248, 0.5);
+}
+
+.plan-linework .plan-line {
+  fill: none;
+  stroke: rgba(243, 245, 248, 0.42);
+  stroke-width: 1.5;
+}
+
+.plan-linework .plan-dim {
+  fill: none;
+  stroke: rgba(217, 164, 65, 0.55);
+  stroke-width: 1.25;
+}
+
+.plan-linework .plan-text {
+  fill: rgba(217, 164, 65, 0.6);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+}
+
+/* Launch poster — the city arrives as a circular reveal, and the markers
+   breathe. Both are CSS so the compositor drives them, not a JS loop. */
+@keyframes city-reveal {
+  from {
+    clip-path: circle(0% at 50% 50%);
+    opacity: 0.2;
+  }
+  to {
+    clip-path: circle(85% at 50% 50%);
+    opacity: 1;
+  }
+}
+
+.city-poster__map {
+  animation: city-reveal 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes city-pin {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.75);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.35);
+    opacity: 1;
+  }
+}
+
+.city-poster__pin {
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 227, 166, 0.95) 0%,
+    rgba(255, 210, 122, 0.45) 35%,
+    rgba(217, 164, 65, 0) 70%
+  );
+  animation: city-pin 3.4s ease-in-out infinite both;
+  /* Held back until the map has arrived under them. */
+  animation-delay: inherit;
+}
+
+/* The poster lifts away rather than blinking out */
+.launch-gate {
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.launch-gate--leaving {
+  opacity: 0;
+  transform: scale(1.06);
+  pointer-events: none;
+}
+
+/* Traffic streaks travelling the arterials */
+@keyframes city-traffic {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+.city-poster__car {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 3px;
+  border-radius: 9999px;
+  background: #fff1cf;
+  box-shadow:
+    0 0 6px 2px rgba(255, 214, 128, 0.75),
+    0 0 14px 5px rgba(217, 164, 65, 0.35);
+  offset-rotate: 0deg;
+  animation: city-traffic linear infinite both;
+}
+
+/* A second, dimmer stream so the roads don't pulse in lockstep */
+.city-poster__car--slow {
+  height: 2px;
+  width: 2px;
+  background: rgba(255, 226, 170, 0.8);
+  box-shadow: 0 0 5px 2px rgba(217, 164, 65, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .city-poster__map {
+    animation: none;
+  }
+  .city-poster__pin {
+    animation: none;
+    opacity: 0.9;
+    transform: translate(-50%, -50%);
+  }
+  .city-poster__car {
+    display: none;
+  }
+}
+
 /* Film grain — subtle texture over cinematic backgrounds */
 .grain-overlay {
   position: absolute;

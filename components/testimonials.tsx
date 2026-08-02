@@ -1,6 +1,7 @@
 "use client";
 
 import { Building2, Landmark, Map, Trees } from "lucide-react";
+import { PlanLinework } from "@/components/plan-linework";
 import {
   SectionHeading,
   StaggerGroup,
@@ -52,7 +53,8 @@ const CREDENTIALS = [
 
 export function Testimonials() {
   return (
-    <section className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 md:py-32 lg:px-8">
+    <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 py-24 sm:px-6 md:py-32 lg:px-8">
+      <PlanLinework flip className="-z-10 inset-0 h-full w-full opacity-[0.06]" />
       <SectionHeading
         eyebrow="Track Record"
         title="Trusted Across Sectors, at Every Scale"

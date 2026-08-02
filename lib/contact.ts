@@ -2,12 +2,12 @@
 // footer, the closing CTA and the page's structured data, and a phone number
 // that disagrees with itself across three places is worse than no number.
 
-export const STUDIO_PHONE = "020 - 48616777";
-export const STUDIO_PHONE_HREF = "tel:+912048616777";
+export const STUDIO_PHONE = "+91 96076 97369";
+export const STUDIO_PHONE_HREF = "tel:+919607697369";
 export const STUDIO_EMAIL = "dsignarchitects@outlook.com";
 export const STUDIO_EMAIL_HREF = `mailto:${STUDIO_EMAIL}`;
 export const STUDIO_ADDRESS =
-  "G-7, Ashoka Pavillion, Dr. Ambedkar Road, Camp, Pune - 01";
+  "Flat no 201, Leena Manik Apartment, near Shantai Hotel, Rasta Peth, Pune - 411011";
 
 /**
  * The studio's own Google Maps listing rather than a text search for the

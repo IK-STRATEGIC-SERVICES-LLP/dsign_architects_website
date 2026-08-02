@@ -4,8 +4,10 @@ import Image from "next/image";
 // "D'sign" with letter-spaced "ARCHITECTS", background removed. Source is 1029x242.
 const ASPECT = 1029 / 242;
 
-export function Logo({ size = "md" }: { size?: "md" | "lg" }) {
-  const height = size === "lg" ? 56 : 40;
+const HEIGHTS = { md: 40, lg: 56, xl: 104 } as const;
+
+export function Logo({ size = "md" }: { size?: keyof typeof HEIGHTS }) {
+  const height = HEIGHTS[size];
   const width = Math.round(height * ASPECT);
 
   return (

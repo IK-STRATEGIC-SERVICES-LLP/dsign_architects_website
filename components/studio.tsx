@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Lightbulb, Ruler, TreePine } from "lucide-react";
+import { PlanLinework } from "@/components/plan-linework";
 import {
   Reveal,
   SectionHeading,
@@ -38,7 +39,11 @@ export function Studio() {
   const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
 
   return (
-    <section id="studio" className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 md:py-32 lg:px-8">
+    <section
+      id="studio"
+      className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 py-24 sm:px-6 md:py-32 lg:px-8"
+    >
+      <PlanLinework className="-z-10 inset-0 h-full w-full opacity-[0.07]" />
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
           <div

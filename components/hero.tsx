@@ -7,13 +7,67 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronDown, Play } from "lucide-react";
 import { easeLuxe } from "@/components/motion-primitives";
+import { PROJECTS } from "@/lib/projects";
 
 // Still from the studio's own Shiv Shrushti film, so the hero shows real
 // work rather than stock photography.
 const HERO_IMAGE_SRC = "/media/shiv-shrushti/poster.webp";
+
+// On compact screens the scroll-driven Ken Burns has very little scroll to
+// work with, so the hero cycles the project posters instead. Desktop keeps
+// the single still — there the helix already carries the work.
+const HERO_SLIDES = [
+  HERO_IMAGE_SRC,
+  ...PROJECTS.map((p) => p.image).filter((src) => src !== HERO_IMAGE_SRC),
+];
+const SLIDE_MS = 5200;
+
+function useHeroSlideshow(sectionRef: React.RefObject<HTMLElement | null>) {
+  const reduceMotion = useReducedMotion();
+  const [enabled, setEnabled] = useState(false);
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (reduceMotion) {
+      setEnabled(false);
+      return;
+    }
+    const mq = window.matchMedia("(max-width: 1024px)");
+    const update = () => setEnabled(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, [reduceMotion]);
+
+  useEffect(() => {
+    if (!enabled) {
+      setIndex(0);
+      return;
+    }
+    const el = sectionRef.current;
+    let onScreen = true;
+    const io = el
+      ? new IntersectionObserver(([e]) => (onScreen = e.isIntersecting), {
+          threshold: 0.1,
+        })
+      : null;
+    if (io && el) io.observe(el);
+
+    const id = window.setInterval(() => {
+      if (onScreen) setIndex((i) => (i + 1) % HERO_SLIDES.length);
+    }, SLIDE_MS);
+
+    return () => {
+      window.clearInterval(id);
+      io?.disconnect();
+    };
+  }, [enabled, sectionRef]);
+
+  return { enabled, index };
+}
 
 const HEADLINE_LINES = ["Architecture,", "Interiors", "and Execution"];
 
@@ -83,6 +137,8 @@ export function Hero() {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const contentY = useTransform(scrollYProgress, [0, 0.5], ["0%", "-6%"]);
   const cueOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+  const { enabled: slideshow, index: slide } = useHeroSlideshow(sectionRef);
+  const slides = slideshow ? HERO_SLIDES : [HERO_IMAGE_SRC];
 
   return (
     <section
@@ -97,14 +153,18 @@ export function Hero() {
         style={{ scale: bgScale, y: bgY, filter: bgFilter }}
         className="absolute inset-0 z-0"
       >
-        <Image
-          src={HERO_IMAGE_SRC}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
+        {slides.map((src, i) => (
+          <Image
+            key={src}
+            src={src}
+            alt=""
+            fill
+            priority={i === 0}
+            sizes="100vw"
+            className="object-cover transition-opacity duration-[1400ms] ease-out"
+            style={{ opacity: i === slide ? 1 : 0 }}
+          />
+        ))}
         {/* Cinematic grade + vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/30 to-ink" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(8,13,23,0.65)_100%)]" />

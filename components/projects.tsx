@@ -273,6 +273,159 @@ function ProjectsHelix() {
   );
 }
 
+function ProjectCard({ project, sizes }: { project: Project; sizes: string }) {
+  return (
+    <Link
+      href={`/projects/${project.slug}`}
+      className="group relative block aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+    >
+      <Image
+        src={project.image}
+        alt={`${project.title} — ${project.category.toLowerCase()} project in ${project.location}`}
+        fill
+        sizes={sizes}
+        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
+      <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-4 rounded-2xl glass-strong p-5 transition-transform duration-300 group-hover:-translate-y-1">
+        <div>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">
+            {project.category}
+          </span>
+          <h3 className="mt-1 font-display text-lg text-porcelain">{project.title}</h3>
+          <p className="text-sm text-mist">{project.location}</p>
+        </div>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 transition-all duration-300 group-hover:bg-gold group-hover:text-ink">
+          <ArrowUpRight className="h-5 w-5" aria-hidden />
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+const AUTO_ADVANCE_MS = 4200;
+// How long the carousel waits after a swipe before taking over again, so
+// auto-advance never yanks the deck out from under someone browsing.
+const RESUME_AFTER_MS = 7000;
+
+function ProjectsMobileCarousel() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const activeRef = useRef(0);
+  const resumeAtRef = useRef(0);
+
+  const scrollToIndex = (i: number) => {
+    const track = trackRef.current;
+    const card = track?.children[i] as HTMLElement | undefined;
+    if (!track || !card) return;
+    track.scrollTo({ left: card.offsetLeft, behavior: "smooth" });
+  };
+
+  // Track which card is snapped, so the dots and the auto-advance both agree
+  // with wherever the user has swiped to.
+  const handleScroll = () => {
+    const track = trackRef.current;
+    if (!track) return;
+    let nearest = 0;
+    let best = Infinity;
+    Array.from(track.children).forEach((child, i) => {
+      const d = Math.abs((child as HTMLElement).offsetLeft - track.scrollLeft);
+      if (d < best) {
+        best = d;
+        nearest = i;
+      }
+    });
+    activeRef.current = nearest;
+    setActive(nearest);
+  };
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    // Idle in the background rather than advancing off-screen.
+    let onScreen = true;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+      },
+      { threshold: 0.35 }
+    );
+    io.observe(track);
+
+    const id = window.setInterval(() => {
+      if (!onScreen || Date.now() < resumeAtRef.current) return;
+      scrollToIndex((activeRef.current + 1) % PROJECTS.length);
+    }, AUTO_ADVANCE_MS);
+
+    return () => {
+      window.clearInterval(id);
+      io.disconnect();
+    };
+  }, []);
+
+  const holdAutoAdvance = () => {
+    resumeAtRef.current = Date.now() + RESUME_AFTER_MS;
+  };
+
+  return (
+    <section id="projects" className="relative py-24 md:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <SectionHeading
+          eyebrow="Selected Work"
+          title="Buildings That Speak for Themselves"
+          description="A cross-section of recent commissions — each one shaped by its site, its climate, and the people it serves."
+        />
+      </div>
+
+      <div
+        ref={trackRef}
+        onScroll={handleScroll}
+        onPointerDown={holdAutoAdvance}
+        onTouchStart={holdAutoAdvance}
+        className="relative mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:px-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {PROJECTS.map((project) => (
+          <div
+            key={project.slug}
+            className="w-[85%] shrink-0 snap-center sm:w-[60%]"
+          >
+            <ProjectCard project={project} sizes="(min-width: 640px) 60vw, 85vw" />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 flex items-center justify-center gap-2">
+        {PROJECTS.map((project, i) => (
+          <button
+            key={project.slug}
+            type="button"
+            aria-label={`Show ${project.title}`}
+            aria-current={i === active}
+            onClick={() => {
+              holdAutoAdvance();
+              scrollToIndex(i);
+            }}
+            className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold ${
+              i === active ? "w-6 bg-gold" : "w-1.5 bg-gold/30"
+            }`}
+          />
+        ))}
+      </div>
+
+      <div className="mt-10 flex justify-center">
+        <Link
+          href="/projects"
+          className="inline-flex items-center gap-2 rounded-full glass px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-porcelain transition-colors duration-200 hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+        >
+          View All Work
+          <ArrowUpRight className="h-4 w-4 text-gold" aria-hidden />
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 function ProjectsFallbackGrid() {
   return (
     <section
@@ -287,31 +440,10 @@ function ProjectsFallbackGrid() {
       <StaggerGroup className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {PROJECTS.map((project, i) => (
           <StaggerItem key={project.slug} className={i === 0 || i === 3 ? "lg:col-span-2" : ""}>
-            <Link
-              href={`/projects/${project.slug}`}
-              className="group relative block aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
-            >
-              <Image
-                src={project.image}
-                alt={`${project.title} — ${project.category.toLowerCase()} project in ${project.location}`}
-                fill
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
-              <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-4 rounded-2xl glass-strong p-5 transition-transform duration-300 group-hover:-translate-y-1">
-                <div>
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">
-                    {project.category}
-                  </span>
-                  <h3 className="mt-1 font-display text-lg text-porcelain">{project.title}</h3>
-                  <p className="text-sm text-mist">{project.location}</p>
-                </div>
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 transition-all duration-300 group-hover:bg-gold group-hover:text-ink">
-                  <ArrowUpRight className="h-5 w-5" aria-hidden />
-                </span>
-              </div>
-            </Link>
+            <ProjectCard
+              project={project}
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            />
           </StaggerItem>
         ))}
       </StaggerGroup>
@@ -322,13 +454,18 @@ function ProjectsFallbackGrid() {
 export function Projects() {
   // The server always renders the helix; the first client render must match
   // it or React flags a hydration mismatch. Media-query state is therefore
-  // read only after mount, swapping to the fallback grid post-hydration.
-  const [useFallback, setUseFallback] = useState(false);
+  // read only after mount, swapping layout post-hydration.
+  const [mode, setMode] = useState<"helix" | "carousel" | "grid">("helix");
 
   useEffect(() => {
     const mqCompact = window.matchMedia("(max-width: 1024px)");
     const mqMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setUseFallback(mqCompact.matches || mqMotion.matches);
+    // Reduced motion wins outright — a deck that advances itself is exactly
+    // what that preference is asking us not to do.
+    const update = () =>
+      setMode(
+        mqMotion.matches ? "grid" : mqCompact.matches ? "carousel" : "helix"
+      );
     update();
     mqCompact.addEventListener("change", update);
     mqMotion.addEventListener("change", update);
@@ -338,9 +475,7 @@ export function Projects() {
     };
   }, []);
 
-  if (useFallback) {
-    return <ProjectsFallbackGrid />;
-  }
-
+  if (mode === "grid") return <ProjectsFallbackGrid />;
+  if (mode === "carousel") return <ProjectsMobileCarousel />;
   return <ProjectsHelix />;
 }
