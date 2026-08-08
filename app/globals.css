@@ -247,15 +247,59 @@ body {
   from {
     clip-path: circle(0% at 50% 50%);
     opacity: 0.2;
+    filter: brightness(0.8);
   }
   to {
     clip-path: circle(85% at 50% 50%);
     opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@keyframes city-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px rgba(217, 164, 65, 0.15));
+  }
+  50% {
+    filter: drop-shadow(0 0 30px rgba(217, 164, 65, 0.25));
   }
 }
 
 .city-poster__map {
-  animation: city-reveal 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: city-reveal 2.4s cubic-bezier(0.22, 1, 0.36, 1) both, city-glow 4s ease-in-out 2.4s infinite;
+}
+
+/* No transform on .city-poster__scene: the traffic streaks ride CSS
+   offset-path in the same coordinate space as the canvas paint, and an
+   ancestor transform (tried here as a Ken Burns drift) desyncs the two —
+   dots drift off the actual street lines as the scale animates. Depth here
+   comes from the map's own glow pulse and the twinkle/traffic layers instead. */
+
+/* Windows lit across the street fabric — dimmer and denser than the traffic
+   streaks, so the city reads as inhabited even where no road carries motion. */
+@keyframes city-twinkle {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: scale(0.7);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.2);
+  }
+}
+
+.city-poster__twinkle {
+  position: absolute;
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 241, 207, 0.9) 0%,
+    rgba(255, 214, 128, 0.45) 45%,
+    rgba(217, 164, 65, 0) 75%
+  );
+  animation: city-twinkle ease-in-out infinite both;
 }
 
 @keyframes city-pin {
@@ -270,6 +314,20 @@ body {
   }
 }
 
+@keyframes city-pin-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px 2px rgba(255, 227, 166, 0.6),
+      0 0 16px 4px rgba(217, 164, 65, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 12px 3px rgba(255, 227, 166, 0.8),
+      0 0 24px 6px rgba(217, 164, 65, 0.35);
+  }
+}
+
 .city-poster__pin {
   position: absolute;
   height: 14px;
@@ -281,7 +339,7 @@ body {
     rgba(255, 210, 122, 0.45) 35%,
     rgba(217, 164, 65, 0) 70%
   );
-  animation: city-pin 3.4s ease-in-out infinite both;
+  animation: city-pin 3.4s ease-in-out infinite both, city-pin-glow 3.4s ease-in-out infinite both;
   /* Held back until the map has arrived under them. */
   animation-delay: inherit;
 }
@@ -299,7 +357,12 @@ body {
   pointer-events: none;
 }
 
-/* Traffic streaks travelling the arterials */
+/* Traffic streaks travelling the arterials. Only offset-distance and
+   opacity are animated — both are compositor-only properties. An earlier
+   version also animated a multi-layer drop-shadow filter per frame, which
+   is not cheap to composite; at a few hundred simultaneous elements that
+   was enough to visibly drop frames. The glow now comes from the static
+   box-shadow on each element instead. */
 @keyframes city-traffic {
   0% {
     offset-distance: 0%;
@@ -321,23 +384,57 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  height: 3px;
-  width: 3px;
+  height: 4px;
+  width: 4px;
   border-radius: 9999px;
   background: #fff1cf;
   box-shadow:
-    0 0 6px 2px rgba(255, 214, 128, 0.75),
-    0 0 14px 5px rgba(217, 164, 65, 0.35);
+    0 0 8px 2px rgba(255, 214, 128, 0.85),
+    0 0 18px 5px rgba(217, 164, 65, 0.45),
+    inset 0 0 3px rgba(255, 255, 255, 0.6);
   offset-rotate: 0deg;
   animation: city-traffic linear infinite both;
 }
 
 /* A second, dimmer stream so the roads don't pulse in lockstep */
 .city-poster__car--slow {
+  height: 2.5px;
+  width: 2.5px;
+  background: rgba(255, 226, 170, 0.9);
+  box-shadow:
+    0 0 6px 2px rgba(217, 164, 65, 0.5),
+    0 0 12px 3px rgba(255, 214, 128, 0.25);
+}
+
+/* Secondary-street traffic — smaller and dimmer than the arterial streaks,
+   so the busiest roads still read as the brightest. */
+.city-poster__car--mid {
   height: 2px;
   width: 2px;
-  background: rgba(255, 226, 170, 0.8);
-  box-shadow: 0 0 5px 2px rgba(217, 164, 65, 0.4);
+  background: rgba(255, 232, 190, 0.75);
+  box-shadow:
+    0 0 4px 1.5px rgba(217, 164, 65, 0.35),
+    0 0 9px 2px rgba(255, 214, 128, 0.18);
+}
+
+/* Oncoming carriageway — cool headlight-white so the two directions read
+   apart on the same highway line, the way paired lanes look from the air. */
+.city-poster__car--incoming {
+  background: #eef6ff;
+  box-shadow:
+    0 0 7px 2px rgba(214, 232, 255, 0.85),
+    0 0 15px 4px rgba(159, 197, 255, 0.4);
+}
+
+/* Higher specificity than either single class, so the slow oncoming stream
+   keeps its smaller/dimmer sizing rather than the plain incoming style. */
+.city-poster__car--incoming.city-poster__car--slow {
+  height: 2.5px;
+  width: 2.5px;
+  background: rgba(214, 232, 255, 0.85);
+  box-shadow:
+    0 0 5px 2px rgba(159, 197, 255, 0.5),
+    0 0 11px 3px rgba(214, 232, 255, 0.22);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -351,6 +448,10 @@ body {
   }
   .city-poster__car {
     display: none;
+  }
+  .city-poster__twinkle {
+    animation: none;
+    opacity: 0.35;
   }
 }
 
