@@ -81,9 +81,7 @@ export const PROJECTS: Project[] = [
       "Sunken bonfire sit-out and water-edge barbeque deck",
       "Six bedrooms across ground and first floors",
     ],
-    // Opens on a card naming the private clients this house was built for,
-    // which is not ours to publish — start once it has cleared.
-    media: { slug: "nashik-villa", frameCount: 120, startFrame: 12 },
+    media: { slug: "nashik-villa", frameCount: 180 },
   },
   {
     slug: "apti-hillside-estate",

@@ -37,10 +37,14 @@ export function Navbar() {
           scrolled || menuOpen ? "glass-strong shadow-2xl shadow-black/40" : ""
         }`}
       >
+        {/* Same shadow treatment as the links beside it: at the top of the
+            home page the bar has no backing, and the hero opens on a bright
+            sky and pale roof that the gold script would otherwise vanish
+            into. */}
         <a
           href="/#top"
           aria-label="D'sign Architects — home"
-          className="rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+          className="rounded-lg [filter:drop-shadow(0_1px_3px_rgba(0,0,0,0.6))] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
         >
           <Logo />
         </a>

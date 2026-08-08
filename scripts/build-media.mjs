@@ -14,7 +14,7 @@
 // The masters themselves stay in public/videos, which is gitignored.
 
 import { execFile } from "node:child_process";
-import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, rename, rm, writeFile } from "node:fs/promises";
 import { existsSync, statSync } from "node:fs";
 import { promisify } from "node:util";
 import path from "node:path";
@@ -40,8 +40,41 @@ async function dirSize(dir) {
   return files.reduce((sum, f) => sum + statSync(path.join(dir, f)).size, 0);
 }
 
+/**
+ * Shares `total` frames across segments in proportion to their length, using
+ * largest-remainder so the parts add up to exactly `total`. Every segment gets
+ * at least one frame.
+ */
+function allocate(segments, total) {
+  const lengths = segments.map((s) => s.end - s.start);
+  const span = lengths.reduce((a, b) => a + b, 0);
+  const exact = lengths.map((len) => (len / span) * total);
+  const counts = exact.map((n) => Math.max(1, Math.floor(n)));
+
+  let short = total - counts.reduce((a, b) => a + b, 0);
+  const byRemainder = exact
+    .map((n, i) => ({ i, rem: n - Math.floor(n) }))
+    .sort((a, b) => b.rem - a.rem);
+  for (let k = 0; short > 0; k++, short--) counts[byRemainder[k % counts.length].i]++;
+  // Over-allocated (many tiny segments hitting the floor of 1): trim the
+  // longest until it balances, so the total is always honoured.
+  while (short < 0) {
+    const biggest = counts.indexOf(Math.max(...counts));
+    counts[biggest]--;
+    short++;
+  }
+  return counts;
+}
+
 async function buildOne(entry) {
-  const { slug, source, start, duration, frames, posterAt } = entry;
+  const { slug, source, start, duration, segments, frames, posterAt } = entry;
+  const quality = entry.frameQuality ?? FRAME_QUALITY;
+  const width = entry.frameWidth ?? FRAME_WIDTH;
+  // Rows trimmed off the top of the source, for masters with a logo or caption
+  // burnt into the picture. Applied before scaling, so it is expressed in
+  // source pixels.
+  const cropTop = entry.cropTop ?? 0;
+  const crop = cropTop ? `crop=iw:ih-${cropTop}:0:${cropTop},` : "";
   const src = path.join(ROOT, source);
   if (!existsSync(src)) {
     console.error(`  ✗ ${slug}: master not found — ${source}`);
@@ -60,23 +93,58 @@ async function buildOne(entry) {
   await mkdir(framesDir, { recursive: true });
 
   // Frame sequence. -ss before -i seeks fast; fps filter spreads the
-  // requested frame count evenly across the chosen segment.
-  await run(
-    ffmpegPath,
-    [
-      "-hide_banner", "-loglevel", "error", "-y",
-      "-ss", String(start),
-      "-t", String(duration),
-      "-i", src,
-      "-vf", `fps=${frames}/${duration},scale=${FRAME_WIDTH}:-2`,
-      "-c:v", "libwebp",
-      "-quality", String(FRAME_QUALITY),
-      "-preset", "photo",
-      "-compression_level", "6",
-      path.join(framesDir, "%04d.webp"),
-    ],
-    { maxBuffer: 1024 * 1024 * 64 }
-  );
+  // requested frame count evenly across the chosen stretch of footage.
+  const extract = (from, length, count, pattern) =>
+    run(
+      ffmpegPath,
+      [
+        "-hide_banner", "-loglevel", "error", "-y",
+        "-ss", String(from),
+        "-t", String(length),
+        "-i", src,
+        "-vf", `${crop}fps=${count}/${length},scale=${width}:-2`,
+        "-c:v", "libwebp",
+        "-quality", String(quality),
+        "-preset", "photo",
+        "-compression_level", "6",
+        pattern,
+      ],
+      { maxBuffer: 1024 * 1024 * 64 }
+    );
+
+  if (segments) {
+    // Each window is extracted to its own scratch directory, then the results
+    // are renumbered into one continuous sequence. Extracting straight into
+    // framesDir with an offset pattern would work only if ffmpeg produced
+    // exactly the requested count every time, and it does not — a window
+    // ending near a keyframe boundary can come back a frame short.
+    const counts = allocate(segments, frames);
+    let n = 0;
+    for (let s = 0; s < segments.length; s++) {
+      const seg = segments[s];
+      const stage = path.join(outDir, `.seg${s}`);
+      await rm(stage, { recursive: true, force: true });
+      await mkdir(stage, { recursive: true });
+
+      const length = seg.end - seg.start;
+      await extract(seg.start, length, counts[s], path.join(stage, "%04d.webp"));
+
+      const got = (await readdir(stage)).filter((f) => f.endsWith(".webp")).sort();
+      for (const f of got) {
+        n++;
+        await rename(
+          path.join(stage, f),
+          path.join(framesDir, `${String(n).padStart(4, "0")}.webp`)
+        );
+      }
+      await rm(stage, { recursive: true, force: true });
+      console.log(
+        `      ${String(s + 1).padStart(2)}. ${seg.label ?? `${seg.start}s`} — ${got.length} frames`
+      );
+    }
+  } else {
+    await extract(start, duration, frames, path.join(framesDir, "%04d.webp"));
+  }
 
   // Poster still — the first thing a visitor sees, so it gets a touch more
   // quality than the sequence frames.
@@ -87,7 +155,7 @@ async function buildOne(entry) {
       "-ss", String(posterAt),
       "-i", src,
       "-frames:v", "1",
-      "-vf", `scale=${FRAME_WIDTH}:-2`,
+      "-vf", `${crop}scale=${width}:-2`,
       "-c:v", "libwebp",
       "-quality", "82",
       "-preset", "photo",
@@ -102,11 +170,16 @@ async function buildOne(entry) {
     return false;
   }
 
-  // Probe the real output dimensions rather than assuming 16:9.
-  const { stdout } = await run(ffmpegPath, [
+  // Probe the real output dimensions rather than assuming 16:9. `ffmpeg -i`
+  // with no output file always exits non-zero and prints the stream table on
+  // stderr, so both the failure and stderr are the expected path here — read
+  // stdout only and this silently falls through to the 16:9 guess, which is
+  // wrong for any cropped set.
+  const probe = await run(ffmpegPath, [
     "-hide_banner", "-i", path.join(framesDir, written[0]),
-  ]).catch((e) => ({ stdout: "", stderr: e.stderr ?? "" }));
-  const dim = /(\d{3,5})x(\d{3,5})/.exec(stdout) ?? [];
+  ]).catch((e) => ({ stdout: e.stdout ?? "", stderr: e.stderr ?? "" }));
+  const dim =
+    /Video:.*?\s(\d{2,5})x(\d{2,5})/.exec(probe.stderr || probe.stdout) ?? [];
 
   await writeFile(
     path.join(outDir, "meta.json"),
@@ -114,20 +187,57 @@ async function buildOne(entry) {
       {
         slug,
         frameCount: written.length,
-        width: Number(dim[1]) || FRAME_WIDTH,
-        height: Number(dim[2]) || Math.round((FRAME_WIDTH * 9) / 16),
-        segment: { start, duration },
+        width: Number(dim[1]) || width,
+        height: Number(dim[2]) || Math.round((width * 9) / 16),
+        ...(segments
+          ? { segments: segments.map(({ start: s, end, label }) => ({ start: s, end, label })) }
+          : { segment: { start, duration } }),
       },
       null,
       2
     ) + "\n"
   );
 
+  // These masters fade through black between shots rather than cutting, so a
+  // badly placed window silently bakes black frames into the middle of the
+  // scrub — which reads as a flicker on the page, not as an obvious build
+  // error. Cheap to catch here, tedious to spot by scrolling.
+  const black = await findBlackFrames(framesDir, written.length);
+  if (black.length) {
+    console.error(
+      `  ! ${slug}: ${black.length} near-black frame(s) — ${black.slice(0, 12).join(", ")}` +
+        `${black.length > 12 ? " …" : ""}\n` +
+        `    A segment boundary is sitting inside a fade-to-black. Move it clear.`
+    );
+  }
+
   const size = await dirSize(framesDir);
   console.log(
     `  ✓ ${slug}: ${written.length} frames, ${fmtBytes(size)} (${fmtBytes(size / written.length)}/frame)`
   );
-  return true;
+  return black.length === 0;
+}
+
+/** 1-based indices of frames that are essentially black. */
+async function findBlackFrames(framesDir, count) {
+  const { stderr } = await run(
+    ffmpegPath,
+    [
+      "-hide_banner", "-loglevel", "info", "-y",
+      "-f", "image2", "-framerate", "25",
+      "-i", path.join(framesDir, "%04d.webp"),
+      "-vf", "blackframe=amount=90:threshold=40",
+      "-an", "-f", "null", "-",
+    ],
+    { maxBuffer: 1024 * 1024 * 32 }
+  ).catch((e) => ({ stderr: e.stderr ?? "" }));
+
+  const hits = [];
+  for (const m of stderr.matchAll(/Parsed_blackframe\S*\s+frame:(\d+)/g)) {
+    const i = Number(m[1]) + 1; // blackframe reports 0-based
+    if (i >= 1 && i <= count) hits.push(i);
+  }
+  return hits;
 }
 
 const targets = only.length ? MEDIA.filter((m) => only.includes(m.slug)) : MEDIA;

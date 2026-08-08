@@ -21,18 +21,17 @@ export default function Page() {
       <ScrollProgressBar />
       <Navbar />
       <main className="flex-1">
-        {/* Scrolling scrubs through the studio's Ulwe penthouse film. */}
+        {/* Scrolling walks the studio's Nashik villa from the street to the
+            bedrooms — arrival, grounds, then inside. Deliberately wordless:
+            the only thing laid over the film is the studio's own logo on the
+            opening frame, which clears as soon as the walkthrough starts. */}
         <ScrollScrubClient
-          slug="ulwe-penthouse"
-          frameCount={150}
-          poster="/media/ulwe-penthouse/poster.webp"
-          scrollLength={4}
-          chapters={[
-            { kicker: "D'sign Architects", title: "Spaces Designed to Be Lived In" },
-            { kicker: "Architecture", title: "Light, Material, Proportion" },
-            { kicker: "Interiors", title: "Detailed Down to the Millimetre" },
-            { kicker: "Delivery", title: "Designed and Built by One Team" },
-          ]}
+          slug="nashik-villa"
+          frameCount={180}
+          poster="/media/nashik-villa/poster.webp"
+          scrollLength={5}
+          logo
+          showScrollCue={false}
         />
         <Hero />
         <Studio />
