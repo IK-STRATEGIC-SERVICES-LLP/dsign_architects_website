@@ -30,8 +30,22 @@ export type ScrollScrubProps = {
   scrollLength?: number;
   /** Shown once the sequence finishes, e.g. to hint at the section below. */
   showScrollCue?: boolean;
+  /**
+   * Lays the studio's own logo over the opening frame, fading it out as the
+   * scrub starts. Use this instead of leaning on a title card burnt into the
+   * film: the placement is ours, it stays sharp at any size, and it does not
+   * drift when the footage is recut.
+   */
+  logo?: boolean;
   className?: string;
 };
+
+// How far a substitute frame may sit from the one actually wanted. The shots
+// in these films run ~8 frames at their shortest, so anything beyond a couple
+// of frames risks painting a different room entirely — the sequence would
+// flick to the wrong shot and snap back once the real frame arrived. Within
+// this window a substitute is always the same shot, a hair early or late.
+const NEIGHBOUR_LIMIT = 2;
 
 const framePath = (slug: string, i: number) =>
   `/media/${slug}/frames/${String(i + 1).padStart(4, "0")}.webp`;
@@ -39,6 +53,11 @@ const framePath = (slug: string, i: number) =>
 // Captions clear before the very end so they never collide with whatever
 // section follows.
 const CAPTION_EXIT_AT = 0.94;
+
+// The logo has cleared by the time the scrub is this far in — long enough to
+// register as the opening title, short enough that it never sits over the
+// walkthrough itself.
+const LOGO_EXIT_AT = 0.1;
 
 export function ScrollScrub({
   slug,
@@ -48,15 +67,20 @@ export function ScrollScrub({
   startFrame = 0,
   scrollLength = 3.5,
   showScrollCue = true,
+  logo = false,
   className,
 }: ScrollScrubProps) {
   const first = Math.min(Math.max(0, startFrame), frameCount - 1);
   const reduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
   const imagesRef = useRef<(HTMLImageElement | undefined)[]>([]);
   const progressRef = useRef(0);
   const drawnRef = useRef(-1);
+  // Last frame actually painted, so a missing frame can hold the picture
+  // steady instead of blanking or jumping.
+  const paintedRef = useRef(-1);
   const rafRef = useRef(0);
 
   const [lite, setLite] = useState(true);
@@ -81,7 +105,7 @@ export function ScrollScrub({
     return () => compact.removeEventListener("change", update);
   }, [reduceMotion]);
 
-  // Progressive preload: every 8th frame first so scrubbing works almost
+  // Progressive preload: a coarse pass first so scrubbing works almost
   // immediately, then backfill the gaps for full smoothness.
   useEffect(() => {
     if (lite) return;
@@ -92,17 +116,32 @@ export function ScrollScrub({
       new Promise<void>((resolve) => {
         const img = new window.Image();
         img.onload = () => {
-          // Only keep frames that actually decoded — storing a broken image
-          // would make the nearest-frame search pick a blank.
-          imagesRef.current[i] = img;
-          resolve();
+          // Decode before publishing the frame, never on the way to the
+          // canvas. drawImage on a frame that is loaded but still encoded
+          // decodes it synchronously on the main thread — measured at 23ms
+          // average and 371ms worst case for these stills, once per frame,
+          // which is what makes the scrub hitch as you scroll. decode() does
+          // the same work off-thread, after which drawImage costs ~0.02ms.
+          //
+          // Only frames that actually decoded get stored: keeping a broken
+          // image would let the nearest-frame search paint a blank.
+          const publish = () => {
+            imagesRef.current[i] = img;
+            resolve();
+          };
+          if (typeof img.decode === "function") img.decode().then(publish, publish);
+          else publish();
         };
         img.onerror = () => resolve();
         img.src = framePath(slug, i);
       });
 
     (async () => {
-      const stride = 8;
+      // Deliberately NEIGHBOUR_LIMIT * 2, so that from the moment the coarse
+      // pass lands every frame has a loaded neighbour close enough to stand in
+      // for it. A wider stride leaves holes the paint loop can only answer by
+      // freezing until the backfill catches up.
+      const stride = NEIGHBOUR_LIMIT * 2;
       const coarse: number[] = [];
       for (let i = first; i < frameCount; i += stride) coarse.push(i);
       await Promise.all(coarse.map(load));
@@ -146,23 +185,23 @@ export function ScrollScrub({
           : Math.min(chapters.length - 1, Math.floor(p * chapters.length))
       );
       setCueVisible(p < 0.06);
-    };
-    // The paint loop skips the canvas whenever the target frame is already
-    // drawn, and it only resizes the backing store on a frame it actually
-    // paints. So a viewport change while the frame holds steady would leave
-    // the picture stretched — which is what mobile does mid-scroll every
-    // time the address bar slides away. Forcing a repaint keeps it honest.
-    const onResize = () => {
-      drawnRef.current = -1;
-      update();
+
+      // Driven straight from the scroll handler rather than through state:
+      // this runs on every scroll event, and a re-render per frame would
+      // compete with the canvas for the same budget.
+      if (logoRef.current) {
+        logoRef.current.style.opacity = String(
+          Math.max(0, 1 - p / LOGO_EXIT_AT)
+        );
+      }
     };
 
     update();
     window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", update);
     return () => {
       window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", update);
     };
   }, [chapters.length]);
 
@@ -179,29 +218,41 @@ export function ScrollScrub({
         frameCount - 1,
         first + Math.round(progressRef.current * (frameCount - 1 - first))
       );
-      // Nearest already-loaded frame, so gaps during backfill never blank out.
-      // The search stays at or after `first` so a trimmed title card can't be
-      // pulled back in as the nearest neighbour.
-      let index = target;
-      if (!imagesRef.current[index]) {
-        for (let d = 1; d < frameCount; d++) {
+      // Nearest already-loaded frame, so gaps during backfill never blank out
+      // — but only within NEIGHBOUR_LIMIT, since these films are cut reels and
+      // a distant substitute would be a different room. The search stays at or
+      // after `first` so a trimmed title card can't be pulled back in.
+      let index = -1;
+      if (imagesRef.current[target]) {
+        index = target;
+      } else {
+        for (let d = 1; d <= NEIGHBOUR_LIMIT; d++) {
           if (target - d >= first && imagesRef.current[target - d]) {
             index = target - d;
             break;
           }
-          if (imagesRef.current[target + d]) {
+          if (target + d < frameCount && imagesRef.current[target + d]) {
             index = target + d;
             break;
           }
         }
       }
-      const img = imagesRef.current[index];
-      if (!img || index === drawnRef.current) return;
+      // Nothing near enough has loaded: hold the picture rather than cut to
+      // the wrong shot. The backfill will free it within a frame or two.
+      if (index < 0) index = paintedRef.current;
+      const img = index >= 0 ? imagesRef.current[index] : undefined;
+      if (!img) return;
 
+      // Resizing the backing store clears the canvas, so a resize has to force
+      // a repaint even when the frame itself has not changed — otherwise a
+      // viewport change while the frame holds steady (mobile hiding its
+      // address bar mid-scroll) would leave the picture stretched or blank.
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
-      if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
+      const resized = canvas.width !== w * dpr || canvas.height !== h * dpr;
+      if (!resized && index === drawnRef.current) return;
+      if (resized) {
         canvas.width = w * dpr;
         canvas.height = h * dpr;
       }
@@ -217,6 +268,7 @@ export function ScrollScrub({
       const dh = img.naturalHeight * scale;
       ctx.drawImage(img, (w * dpr - dw) / 2, (h * dpr - dh) / 2, dw, dh);
       drawnRef.current = index;
+      paintedRef.current = index;
     };
 
     rafRef.current = requestAnimationFrame(draw);
@@ -224,6 +276,9 @@ export function ScrollScrub({
   }, [lite, ready, frameCount, first]);
 
   const activeChapter = chapter >= 0 ? chapters[chapter] : undefined;
+  // Whether anything is written over the film — the logo doesn't count, it
+  // carries its own scrim and has cleared within the first tenth of the scrub.
+  const hasOverlayText = chapters.length > 0 || showScrollCue;
 
   return (
     <section
@@ -259,20 +314,83 @@ export function ScrollScrub({
           />
         ) : null}
 
-        {/* Cinematic grade so overlaid type always stays legible. Weighted to
-            the edges rather than laid evenly over the picture: captions sit
-            along the bottom and the navbar along the top, so those are the
-            only bands that need holding down. The middle is left clear so
-            the render reads at the brightness it was exported at. */}
+        {/* Cinematic grade, weighted to the edges rather than laid evenly over
+            the picture. How heavy it needs to be depends entirely on whether
+            anything is written on top: the caption grade runs to solid ink at
+            the bottom, which is a lot of frame to give up, and with nothing to
+            hold down it just reads as the render being murky. So a scrub with
+            no type over it gets a much lighter pass — enough to seat the
+            navbar, and nothing else.
+
+            No bottom band on purpose. These masters carry the editor's own
+            shot captions burnt into the picture — y 590-719 of 720 on 143 of
+            this film's 180 frames — and a grade heavy enough to bury them
+            costs the bottom fifth of every frame. The studio would rather
+            show the frame as shot and live with the captions, so leave the
+            lower part of the picture alone. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/45 via-transparent to-ink"
+          className={
+            hasOverlayText
+              ? "pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/45 via-transparent to-ink"
+              : "pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(8,13,23,0.36)_0%,transparent_22%,transparent_100%)]"
+          }
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_58%,rgba(8,13,23,0.45)_100%)]"
+          className={
+            hasOverlayText
+              ? "pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_58%,rgba(8,13,23,0.45)_100%)]"
+              : "pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_70%,rgba(8,13,23,0.26)_100%)]"
+          }
         />
-        <div className="grain-overlay" />
+        {/* Flat variant deliberately — see globals.css. The canvas underneath
+            repaints on every scroll, and a blended layer over it re-blends
+            each time. */}
+        <div className="grain-overlay grain-overlay--flat" />
+
+        {/* Our own mark, laid over the opening frame and faded out by the
+            scroll handler. Sized in vw so it holds the same share of the
+            frame at every width, and capped so it never outgrows the film.
+
+            Legibility comes from stacked drop-shadows rather than a pool of
+            ink behind the mark. Both hold the pale "ARCHITECTS" letters
+            against a bright sky, but a radial scrim reads as a dark smudge
+            sitting on the villa, while a shadow stack hugs the letterforms
+            and leaves the render untouched around them. */}
+        {logo ? (
+          <div
+            ref={logoRef}
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-20"
+          >
+            {/* Bottom-right, clear of the navbar. Held at 22% up from the
+                bottom rather than in the corner: the burnt-in shot captions
+                occupy the bottom 18% of the picture and swap between the left
+                and right corners from shot to shot, so anything lower would
+                land on top of one. */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, ease: easeLuxe }}
+              className="absolute bottom-[22%] right-[6%]"
+            >
+              <Image
+                src="/logo.png"
+                alt=""
+                width={1029}
+                height={242}
+                priority
+                unoptimized
+                // A tight, dense halo rather than a wide diffuse one: the
+                // mark has to hold over bright foliage as well as sky, and a
+                // soft glow simply washes out there. Wider on phones, where
+                // the portrait crop leaves it small.
+                className="h-auto w-[min(64vw,260px)] sm:w-[min(42vw,360px)] [filter:drop-shadow(0_1px_2px_rgba(8,13,23,1))_drop-shadow(0_0_7px_rgba(8,13,23,0.95))_drop-shadow(0_0_18px_rgba(8,13,23,0.9))]"
+              />
+            </motion.div>
+          </div>
+        ) : null}
 
         {chapters.length > 0 ? (
           <div className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-end px-6 pb-24 text-center sm:pb-28">
