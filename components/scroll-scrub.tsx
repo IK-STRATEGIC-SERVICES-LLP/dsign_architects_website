@@ -383,7 +383,7 @@ export function ScrollScrub({
               <Image
                 src="/brand/dsign-logo-on-dark.svg"
                 alt=""
-                width={1026}
+                width={1017}
                 height={207}
                 priority
                 unoptimized

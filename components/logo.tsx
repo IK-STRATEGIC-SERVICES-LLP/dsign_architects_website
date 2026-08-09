@@ -1,10 +1,10 @@
 import Image from "next/image";
 
-// The studio's signature lockup, traced from the delivered artwork to vector
-// (public/brand/, see brand/README.md). Source master was 1029x242 with the
-// ink inset; the lockup is cropped to its ink bounds, so the aspect ratio is
-// slightly wider than the old PNG's.
-const ASPECT = 1026 / 207;
+// The studio's signature lockup (public/brand/, see brand/README.md). The
+// script is traced from the delivered artwork; ARCHITECTS and the (c) are set
+// in Inter Light and converted to outlines, because that half is typeset, not
+// drawn. Cropped to its ink bounds, so the aspect ratio is not the old PNG's.
+const ASPECT = 1016.5 / 207;
 
 const HEIGHTS = { md: 40, lg: 56, xl: 104 } as const;
 

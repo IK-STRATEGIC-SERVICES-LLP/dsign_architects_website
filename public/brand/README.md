@@ -1,12 +1,28 @@
 # D'sign Architects — logo assets
 
-Vector lockups traced from the studio's delivered artwork
-(`public/logo-nobg-original.png`, 1029×242), plus PNG and JPEG exports
-rendered from the same paths. The script is hand-drawn signature artwork,
-not a typeface, so these are a trace of the real thing rather than the name
-re-set in a font — no font reproduces it.
+Built from the studio's delivered artwork (`public/logo-nobg-original.png`,
+1029×242), plus PNG and JPEG exports rendered from the same paths.
 
-Fidelity of the trace against the source alpha mask: **IoU 97.6%**.
+The logo is two different kinds of artwork, and each is built the way it
+should be:
+
+- **"D'sign" is traced.** It is a hand-drawn signature — no typeface
+  reproduces it. Fidelity against the source alpha mask: **IoU 97.6%**.
+- **"ARCHITECTS" and the © are set type**, not lettering, so they are set
+  rather than traced. The artwork's tracking is even to a standard deviation
+  of 1.07 units and its round letters overshoot the cap line exactly as a
+  typeface's do. Metric matching against real font binaries identified
+  **Inter Light**: mean glyph width error 1.15 units, with the `I` stem
+  landing on 2.0 against the artwork's 2.0. Inter is already the site's body
+  face.
+
+Tracing that half was measurably worse, not just less principled: at 20px the
+alpha threshold fattened every stroke, and it bit harder on the gold `E` than
+on its black neighbours, so the traced `E` came out visibly bolder than the
+rest of the word.
+
+Glyphs are converted to outlines, so no asset depends on a font being
+installed or downloaded.
 
 ## Vector — use these on the web
 
@@ -73,7 +89,7 @@ which is exactly why ARCHITECTS was invisible over the hero before.
 Clear space on all four sides is **25% of the lockup's height**. Nothing —
 type, rules, image edges, other logos — inside that.
 
-The lockup is 1026 × 207, and ARCHITECTS is only 23 units of that 207, so its
+The lockup is 1016.5 × 207, and ARCHITECTS is only 23 units of that 207, so its
 cap height is **11.1% of whatever height you set**:
 
 | Lockup height | ARCHITECTS cap height | Verdict |
@@ -99,20 +115,16 @@ mark, not a defect in the file.
 The © is part of the lockup. It is baked into the delivered master and is
 what the production site serves, so the lockups keep it.
 
-It is also the one element built two ways, because its two halves need
-opposite treatment.
+It comes from Inter, the same face as the wordmark, so it is typographically
+part of that line rather than a separately drawn symbol.
 
-The **enclosing ring is drawn**, not traced: it is a plain circle with no
-letterform in it, and a trace of a 31px circle stays polygonal however it is
-smoothed. It uses the measured geometry — centreline r 14.03, stroke 3.39,
-centred at (1009.49, 205.49) in lockup space — so it is exact at any size.
-
-The **C inside is traced**, because it is a serif letterform with flared
-terminals. Redrawing it as a round-capped arc looked cleaner in isolation and
-was simply the wrong mark; it did not match the artwork.
-
-Both generators implement this split, and they have to agree — otherwise the
-PNG and the SVG drift into two slightly different marks.
+It is **re-set, not reproduced**. As delivered it is 30 units tall against the
+wordmark's 21-unit cap height — **143% of the letters it sits beside** — and
+floats 16 units below their baseline, so it reads as a detached blob. Here it
+is at the typographic norm: **55% of cap height, bottom on the wordmark
+baseline, one word-space after the S**. That is the one deliberate departure
+from the master's geometry, and it shortens the lockup from 1026 to 1016.5
+units wide.
 
 ## Don't
 
