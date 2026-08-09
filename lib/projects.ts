@@ -81,7 +81,10 @@ export const PROJECTS: Project[] = [
       "Sunken bonfire sit-out and water-edge barbeque deck",
       "Six bedrooms across ground and first floors",
     ],
-    media: { slug: "nashik-villa", frameCount: 180 },
+    // Same media folder as the homepage hero — currently a 4-shot cut
+    // (arrival, two living-room angles, pool deck), not the full walkthrough
+    // the description/highlights below describe. See media-manifest.mjs.
+    media: { slug: "nashik-villa", frameCount: 120 },
   },
   {
     slug: "apti-hillside-estate",

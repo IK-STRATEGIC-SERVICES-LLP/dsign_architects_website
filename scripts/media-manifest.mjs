@@ -51,11 +51,11 @@ export const MEDIA = [
     source: "public/videos/240297- Full Render Clip.mp4",
     // This master is a 4:33 reel, not a continuous move: 13.5s of stock
     // hillside footage carrying the title cards, then 40 hard-cut shots, then
-    // a "Thank You" card. Scrubbing all 40 inside a hero-length scroll puts a
-    // cut every ~60px of travel, which strobes. So this takes the shots that
-    // carry the journey — arrival, then the grounds, then inside — and drops
-    // the near-duplicate angles (the reel covers each of the six bedrooms
-    // three times over, and the living room three times).
+    // a "Thank You" card. The hero uses a client-specified 4-shot cut of it —
+    // arrival, then the two living-room angles that read best, then the pool
+    // deck reached from that room — rather than the full walkthrough: fewer
+    // cuts inside a hero-length scroll reads far calmer than strobing through
+    // all 40 (see git history for that longer cut, if it's wanted again).
     //
     // Several of the reel's shot changes fade through black rather than cut,
     // and a window straddling one bakes black frames into the middle of the
@@ -71,33 +71,28 @@ export const MEDIA = [
     // filling the viewport crops ~20% off the sides.
     cropTop: 122,
     segments: [
-      // Starts at 15.7 rather than 14.6: the fade up from the title card only
-      // finishes at 15.65s, so an earlier start opens the whole page on a
-      // half-exposed frame (luma 82 against this shot's 118).
-      { start: 15.7, end: 20.1, label: "Birds eye view" },
       { start: 21.1, end: 27.1, label: "Front entrance" },
-      { start: 27.5, end: 34.3, label: "Car entrance gate" },
-      { start: 35.2, end: 41.6, label: "Car parking and entrance steps" },
-      { start: 49.4, end: 57.6, label: "Pool area to dining" },
-      { start: 58.1, end: 66.3, label: "Sunken bonfire sit-out" },
-      { start: 74.1, end: 80.9, label: "Deck with barbeque gazebo" },
-      { start: 88.6, end: 95.5, label: "Pool sit-out with fountain" },
       { start: 105.5, end: 111.5, label: "Living room" },
-      { start: 132.5, end: 138.9, label: "Entrance lobby" },
-      { start: 139.3, end: 145.7, label: "Staircase sit-out" },
-      { start: 153.7, end: 157.6, label: "Kitchen and dining" },
-      { start: 162.8, end: 168.7, label: "Bedroom 1" },
-      { start: 218.2, end: 222.7, label: "Bedroom 4" },
-      { start: 253.6, end: 258.2, label: "Bedroom 6" },
+      { start: 125.7, end: 132.0, label: "Living room, pool-facing" },
+      { start: 66.8, end: 73.5, label: "Pool deck with screen" },
     ],
-    frames: 180,
-    // These renders are foliage-heavy and cost ~78KB/frame at the default
-    // quality — 180 of those would be a 14MB hero. 54 holds up on this
-    // material and keeps the set in line with the other slugs.
-    frameQuality: 54,
-    // The establishing aerial the sequence opens on, so the poster the mobile
-    // and pre-load paths show is the same shot the scrub starts from.
-    posterAt: 17.5,
+    // Every shot also carries a burnt-in caption chip ("Living Room",
+    // "Backyard", etc.) bottom-left or bottom-right. Run
+    // `python scripts/remove-captions.py nashik-villa` right after this
+    // build — it detects the chip by its text (edge-detects the glyphs, not
+    // the chip's background colour, since the background isn't reliably
+    // darker than the scene behind it — the entrance shot's chip sits on
+    // asphalt nearly as dark as the chip itself) and inpaints over it.
+    // `--force` on this script alone re-runs it without rebuilding frames.
+    frames: 120,
+    // A short, 4-shot cut affords real quality: this was 54 when the set
+    // covered 15 shots over 45s and needed to stay small. At q70/1280px,
+    // measured 70KB/frame on this footage (vs. 56KB at the old 54) — 120
+    // frames lands at 8.2MB, smaller than the old 15-shot set despite the
+    // higher setting, because there is much less footage to cover.
+    frameQuality: 70,
+    // The establishing shot the sequence now opens on.
+    posterAt: 24.1,
   },
   {
     slug: "apti-villa",
