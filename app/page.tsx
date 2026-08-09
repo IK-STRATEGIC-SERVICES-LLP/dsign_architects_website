@@ -21,18 +21,18 @@ export default function Page() {
       <ScrollProgressBar />
       <Navbar />
       <main className="flex-1">
-        {/* A client-specified 4-shot cut of the studio's Nashik villa:
-            arrival, the two living-room angles, then the pool deck reached
-            from that room. Deliberately wordless — the only thing laid over
-            the film is the studio's own logo on the opening frame, which
-            clears as soon as the walkthrough starts. frameCount must match
+        {/* A 5-shot cut of the studio's Nashik villa: arrival, the entrance
+            lobby, the two living-room angles, then the pool deck reached from
+            that room. Deliberately wordless — the only thing laid over the
+            film is the studio's own logo on the opening frame, which clears
+            as soon as the walkthrough starts. frameCount must match
             public/media/nashik-villa/meta.json — rerun build-media.mjs and
             update both if the cut changes. */}
         <ScrollScrubClient
           slug="nashik-villa"
-          frameCount={120}
+          frameCount={150}
           poster="/media/nashik-villa/poster.webp"
-          scrollLength={4}
+          scrollLength={5}
           logo
           showScrollCue={false}
         />

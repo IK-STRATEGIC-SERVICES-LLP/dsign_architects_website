@@ -1,6 +1,6 @@
 {
   "slug": "nashik-villa",
-  "frameCount": 120,
+  "frameCount": 150,
   "width": 1280,
   "height": 598,
   "segments": [
@@ -8,6 +8,11 @@
       "start": 21.1,
       "end": 27.1,
       "label": "Front entrance"
+    },
+    {
+      "start": 132.5,
+      "end": 138.9,
+      "label": "Entrance lobby"
     },
     {
       "start": 105.5,

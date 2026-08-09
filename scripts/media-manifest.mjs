@@ -51,11 +51,11 @@ export const MEDIA = [
     source: "public/videos/240297- Full Render Clip.mp4",
     // This master is a 4:33 reel, not a continuous move: 13.5s of stock
     // hillside footage carrying the title cards, then 40 hard-cut shots, then
-    // a "Thank You" card. The hero uses a client-specified 4-shot cut of it —
-    // arrival, then the two living-room angles that read best, then the pool
-    // deck reached from that room — rather than the full walkthrough: fewer
-    // cuts inside a hero-length scroll reads far calmer than strobing through
-    // all 40 (see git history for that longer cut, if it's wanted again).
+    // a "Thank You" card. The hero uses a 5-shot cut of it — arrival, the
+    // lobby, the two living-room angles that read best, then the pool deck
+    // reached from that room — rather than the full walkthrough: fewer cuts
+    // inside a hero-length scroll reads far calmer than strobing through all
+    // 40 (see git history for that longer cut, if it's wanted again).
     //
     // Several of the reel's shot changes fade through black rather than cut,
     // and a window straddling one bakes black frames into the middle of the
@@ -72,6 +72,11 @@ export const MEDIA = [
     cropTop: 122,
     segments: [
       { start: 21.1, end: 27.1, label: "Front entrance" },
+      // The beat that makes the cut into the house read as a walk rather than
+      // a jump: this shot is the room between the front door and the living
+      // room, and the living room's own sofa and dining area are visible at
+      // its left edge, so the following shot lands somewhere already seen.
+      { start: 132.5, end: 138.9, label: "Entrance lobby" },
       { start: 105.5, end: 111.5, label: "Living room" },
       { start: 125.7, end: 132.0, label: "Living room, pool-facing" },
       { start: 66.8, end: 73.5, label: "Pool deck with screen" },
@@ -84,12 +89,15 @@ export const MEDIA = [
     // darker than the scene behind it — the entrance shot's chip sits on
     // asphalt nearly as dark as the chip itself) and inpaints over it.
     // `--force` on this script alone re-runs it without rebuilding frames.
-    frames: 120,
-    // A short, 4-shot cut affords real quality: this was 54 when the set
-    // covered 15 shots over 45s and needed to stay small. At q70/1280px,
-    // measured 70KB/frame on this footage (vs. 56KB at the old 54) — 120
-    // frames lands at 8.2MB, smaller than the old 15-shot set despite the
-    // higher setting, because there is much less footage to cover.
+    // 30 frames per shot, held constant as shots are added or dropped so the
+    // apparent camera speed stays the same across edits — 4 shots wanted 120,
+    // these 5 want 150.
+    frames: 150,
+    // A short cut affords real quality: this was 54 when the set covered 15
+    // shots over 45s and needed to stay small. At q70/1280px, measured
+    // 70KB/frame on this footage (vs. 56KB at the old 54) — 150 frames lands
+    // at ~10.5MB, still under the old 15-shot set despite the higher setting,
+    // because there is much less footage to cover.
     frameQuality: 70,
     // The establishing shot the sequence now opens on.
     posterAt: 24.1,
