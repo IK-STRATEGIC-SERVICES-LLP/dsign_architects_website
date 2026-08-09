@@ -40,13 +40,19 @@ export function Navbar() {
         {/* Same shadow treatment as the links beside it: at the top of the
             home page the bar has no backing, and the hero opens on a bright
             sky and pale roof that the gold script would otherwise vanish
-            into. */}
+            into.
+
+            The bar has no backing until it scrolls, so the wordmark sits on
+            two opposite surfaces in one component: the bright hero at rest,
+            dark glass once scrolled. A single baked colour is wrong on one
+            of them — that is why ARCHITECTS was invisible over the hero —
+            so the variant follows the same flag that draws the backing. */}
         <a
           href="/#top"
           aria-label="D'sign Architects — home"
           className="rounded-lg [filter:drop-shadow(0_1px_3px_rgba(0,0,0,0.6))] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
         >
-          <Logo />
+          <Logo surface={scrolled || menuOpen ? "dark" : "light"} />
         </a>
 
         <div className="hidden items-center gap-8 md:flex">
