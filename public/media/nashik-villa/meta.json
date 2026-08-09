@@ -1,53 +1,13 @@
 {
   "slug": "nashik-villa",
-  "frameCount": 180,
+  "frameCount": 150,
   "width": 1280,
   "height": 598,
   "segments": [
     {
-      "start": 15.7,
-      "end": 20.1,
-      "label": "Birds eye view"
-    },
-    {
       "start": 21.1,
       "end": 27.1,
       "label": "Front entrance"
-    },
-    {
-      "start": 27.5,
-      "end": 34.3,
-      "label": "Car entrance gate"
-    },
-    {
-      "start": 35.2,
-      "end": 41.6,
-      "label": "Car parking and entrance steps"
-    },
-    {
-      "start": 49.4,
-      "end": 57.6,
-      "label": "Pool area to dining"
-    },
-    {
-      "start": 58.1,
-      "end": 66.3,
-      "label": "Sunken bonfire sit-out"
-    },
-    {
-      "start": 74.1,
-      "end": 80.9,
-      "label": "Deck with barbeque gazebo"
-    },
-    {
-      "start": 88.6,
-      "end": 95.5,
-      "label": "Pool sit-out with fountain"
-    },
-    {
-      "start": 105.5,
-      "end": 111.5,
-      "label": "Living room"
     },
     {
       "start": 132.5,
@@ -55,29 +15,19 @@
       "label": "Entrance lobby"
     },
     {
-      "start": 139.3,
-      "end": 145.7,
-      "label": "Staircase sit-out"
+      "start": 105.5,
+      "end": 111.5,
+      "label": "Living room"
     },
     {
-      "start": 153.7,
-      "end": 157.6,
-      "label": "Kitchen and dining"
+      "start": 125.7,
+      "end": 132,
+      "label": "Living room, pool-facing"
     },
     {
-      "start": 162.8,
-      "end": 168.7,
-      "label": "Bedroom 1"
-    },
-    {
-      "start": 218.2,
-      "end": 222.7,
-      "label": "Bedroom 4"
-    },
-    {
-      "start": 253.6,
-      "end": 258.2,
-      "label": "Bedroom 6"
+      "start": 66.8,
+      "end": 73.5,
+      "label": "Pool deck with screen"
     }
   ]
 }
