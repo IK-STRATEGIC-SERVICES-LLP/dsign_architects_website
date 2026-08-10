@@ -89,13 +89,12 @@ export const PROJECTS: Project[] = [
       "Sunken bonfire sit-out and water-edge barbeque deck",
       "Six bedrooms across ground and first floors",
     ],
-    // Same media folder as the homepage hero: a 10-shot walkthrough built
-    // from the studio's per-shot 4K masters, running street arrival through
-    // to the pool deck at dusk. frameCount must match
-    // public/media/nashik-villa/meta.json. scrollLength is raised from the
-    // 3.5 the shorter sets use because this sequence is 2.5x their length —
-    // at 8 it scrubs at the same speed they do.
-    media: { slug: "nashik-villa", frameCount: 300, scrollLength: 8 },
+    // Same media folder as the homepage hero: the studio's own six-shot
+    // cover sequence, built from their per-shot 4K masters. frameCount must
+    // match public/media/nashik-villa/meta.json. scrollLength is raised from
+    // the 3.5 the ~120-frame sets use because this one is half as long
+    // again — at 5 it scrubs at the same speed they do.
+    media: { slug: "nashik-villa", frameCount: 180, scrollLength: 5 },
   },
   {
     slug: "apti-hillside-estate",

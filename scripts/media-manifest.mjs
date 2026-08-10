@@ -67,31 +67,26 @@ export const MEDIA = [
     // (scripts/remove-captions.py) and still left the frames soft. These
     // clips are clean 3840x2160 masters — no overlays, no crop, no inpaint.
     //
-    // The cut is a walkthrough: arrive from the street, up to the door,
-    // through the lobby into the living rooms, then out to the pool deck.
-    // It also runs day -> evening -> dusk, so the light never jumps
-    // backwards across a cut.
+    // This order is the studio's own, sent as their "Sequence for the Cover
+    // Page" — six shots, not a cut assembled here. Do not reorder it or add
+    // to it without them: the four clips left out (8, 12, Clip 4, Clip 7)
+    // were dropped by them, not for any technical reason.
+    //
+    // It happens to run day -> dusk and outside -> inside -> outside, so no
+    // extra work is needed to stop the light jumping backwards across a cut.
     segments: [
       { source: `${NASHIK_HQ}Clip 1.mp4`, label: "Street arrival" },
       { source: `${NASHIK_HQ}Clip 10.mp4`, label: "Front entrance" },
-      // The beat that makes the cut into the house read as a walk rather
-      // than a jump: this is the room behind the front door, and the living
-      // room's own sofa and dining area are visible at its edge, so the
-      // shots that follow land somewhere already seen.
-      { source: `${NASHIK_HQ}7.mp4`, label: "Entrance lobby" },
-      { source: `${NASHIK_HQ}8.mp4`, label: "Lobby, living-room side" },
       { source: `${NASHIK_HQ}6.mp4`, label: "Living room" },
-      { source: `${NASHIK_HQ}12.mp4`, label: "Family lounge" },
-      { source: `${NASHIK_HQ}Clip 6.mp4`, label: "Covered walkway" },
-      { source: `${NASHIK_HQ}Clip 4.mp4`, label: "Rear elevation" },
+      { source: `${NASHIK_HQ}7.mp4`, label: "Entrance lobby" },
       { source: `${NASHIK_HQ}Clip 11.mp4`, label: "Pool deck" },
-      { source: `${NASHIK_HQ}Clip 7.mp4`, label: "Pool deck with screen" },
+      { source: `${NASHIK_HQ}Clip 6.mp4`, label: "Covered walkway" },
     ],
     // 30 frames per shot, held constant as shots are added or dropped so the
-    // apparent camera speed stays the same across edits — the old 5-shot cut
-    // wanted 150, these 10 want 300. They are shared out by shot length
-    // rather than evenly, so the longer clips do not appear to speed up.
-    frames: 300,
+    // apparent camera speed stays the same across edits — six shots want 180.
+    // They are shared out by shot length rather than evenly, so the longer
+    // clips do not appear to speed up.
+    frames: 180,
     // Worth spending here in a way the old reel never was: at 1080p, asking
     // for more than 1280px only enlarged the master's own compression. From
     // a 4K source 1600px is real detail, and it is the width at which the

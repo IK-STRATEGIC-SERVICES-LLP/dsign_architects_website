@@ -23,24 +23,22 @@ export default function Page() {
       <ScrollProgressBar />
       <Navbar />
       <main className="flex-1">
-        {/* A 10-shot walkthrough of the studio's Nashik villa, built from its
-            per-shot 4K masters: arrive from the street, up to the door,
-            through the lobby into the living rooms, then out to the pool deck
-            at dusk. Deliberately wordless — the only thing laid over the film
-            is the studio's own logo on the opening frame, which clears as
-            soon as the walkthrough starts. frameCount must match
-            public/media/nashik-villa/meta.json — rerun build-media.mjs and
-            update both if the cut changes.
+        {/* The studio's own six-shot cover sequence for their Nashik villa,
+            built from its per-shot 4K masters: street, front elevation,
+            living room, lobby, pool deck, covered walkway. The order is
+            theirs — see media-manifest.mjs before changing it. Deliberately
+            wordless: the only thing laid over the film is the studio's own
+            logo on the opening frame, which clears as soon as the sequence
+            starts. frameCount must match public/media/nashik-villa/meta.json
+            — rerun build-media.mjs and update both if the cut changes.
 
-            scrollLength is 8 rather than the 10 that would hold the old
-            5-shot cut's exact scrub speed: 1000vh is ten screens of scrolling
-            before the page proper begins, which is more than an opener should
-            ask for. At 8 the film runs about a quarter faster than before. */}
+            scrollLength 5 keeps the scrub at ~36 frames per viewport, the
+            speed this hero has always run at. */}
         <ScrollScrubClient
           slug="nashik-villa"
-          frameCount={300}
+          frameCount={180}
           poster="/media/nashik-villa/poster.webp"
-          scrollLength={8}
+          scrollLength={5}
           logo
           showScrollCue={false}
         />
