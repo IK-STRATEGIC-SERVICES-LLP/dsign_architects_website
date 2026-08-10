@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { BlueprintSheet } from "@/components/blueprint-sheet";
-import { INSTAGRAM_URL, MAPS_URL, STUDIO_EMAIL } from "@/lib/contact";
+import {
+  INSTAGRAM_URL,
+  LINKEDIN_URL,
+  MAPS_URL,
+  STUDIO_EMAIL,
+} from "@/lib/contact";
 import "./globals.css";
 
 // Titles: a high-contrast old-style serif, standing in for the Tan Aegean
@@ -90,7 +95,7 @@ const ORGANIZATION_JSON_LD = {
   areaServed: "IN",
   priceRange: "$$",
   hasMap: MAPS_URL,
-  sameAs: [INSTAGRAM_URL],
+  sameAs: [INSTAGRAM_URL, LINKEDIN_URL],
 };
 
 export default function RootLayout({

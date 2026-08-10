@@ -3,6 +3,7 @@ import { Logo } from "@/components/logo";
 import {
   INSTAGRAM_HANDLE,
   INSTAGRAM_URL,
+  LINKEDIN_URL,
   MAPS_URL,
   STUDIO_ADDRESS,
   STUDIO_EMAIL,
@@ -41,6 +42,47 @@ function InstagramIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+function LinkedInIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className={className}
+    >
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V8z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
+// The studio's founding year, which is what the copyright notice carries —
+// the studio's call, in preference to the current year or a range to it. Same
+// date the hero's "Established" stat cites.
+const FOUNDED_YEAR = 2015;
+
+const SOCIALS = [
+  {
+    network: "Instagram",
+    // Instagram is the one profile the studio is known by its handle, so the
+    // pill shows that rather than the platform name.
+    label: INSTAGRAM_HANDLE,
+    href: INSTAGRAM_URL,
+    Icon: InstagramIcon,
+  },
+  {
+    network: "LinkedIn",
+    label: "LinkedIn",
+    href: LINKEDIN_URL,
+    Icon: LinkedInIcon,
+  },
+];
 
 const CONTACT_DETAILS = [
   { icon: Phone, href: STUDIO_PHONE_HREF, label: STUDIO_PHONE },
@@ -95,26 +137,29 @@ export function Footer() {
             <span className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
               Follow
             </span>
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="D'sign Architects on Instagram (opens in a new tab)"
-              className="group inline-flex w-fit items-center gap-3 rounded-full glass-gold py-2 pl-2 pr-5 transition-colors duration-200 hover:border-gold/50 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
-            >
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 transition-all duration-300 group-hover:bg-gold group-hover:text-ink">
-                <InstagramIcon className="h-4 w-4" />
-              </span>
-              <span className="text-sm text-mist transition-colors duration-200 group-hover:text-porcelain">
-                {INSTAGRAM_HANDLE}
-              </span>
-            </a>
+            {SOCIALS.map(({ network, label, href, Icon }) => (
+              <a
+                key={network}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`D'sign Architects on ${network} (opens in a new tab)`}
+                className="group inline-flex w-fit items-center gap-3 rounded-full glass-gold py-2 pl-2 pr-5 transition-colors duration-200 hover:border-gold/50 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 transition-all duration-300 group-hover:bg-gold group-hover:text-ink">
+                  <Icon className="h-4 w-4" />
+                </span>
+                <span className="text-sm text-mist transition-colors duration-200 group-hover:text-porcelain">
+                  {label}
+                </span>
+              </a>
+            ))}
           </div>
         </div>
 
         <div className="mt-10 flex flex-col items-center gap-1 border-t border-white/10 pt-6 text-center text-sm text-mist md:flex-row md:justify-between md:text-left">
           <p>
-            &copy; {new Date().getFullYear()}{" "}D&rsquo;Sign Architects. All rights reserved.
+            &copy; {FOUNDED_YEAR}{" "}D&rsquo;Sign Architects. All rights reserved.
           </p>
           <p>
             Developed by{" "}

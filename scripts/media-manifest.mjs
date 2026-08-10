@@ -5,13 +5,25 @@
 // every film and the "Thank You"/credits card at the tail, neither of which
 // belongs in a scroll animation.
 //
-// `segments` is the alternative to `start`/`duration`, for masters that are
-// cut as a reel of separate shots rather than one continuous move. Each entry
-// is a `{ start, end }` window into the master, and the built sequence is the
-// windows concatenated in listed order. Frames are shared out in proportion to
-// each window's length, so the apparent camera speed stays even across the cut.
+// `segments` is the alternative to `start`/`duration`, for films that are cut
+// as a reel of separate shots rather than one continuous move. Each entry is a
+// `{ start, end }` window, and the built sequence is the windows concatenated
+// in listed order. Frames are shared out in proportion to each window's length,
+// so the apparent camera speed stays even across the cut.
+//
+// A segment may also carry its own `source`, which is how a set is assembled
+// when the studio delivers each shot as a separate file instead of one reel.
+// Such a segment usually wants the whole clip, so `start`/`end` can be left
+// off — the build probes the file and uses its full length. `posterSource`
+// likewise picks which clip the poster still is grabbed from, since the
+// opening shot is rarely the best one to hold on.
 //
 // Masters live in public/videos (gitignored). Output lands in public/media.
+
+// The studio's per-shot 4K masters for the Nashik villa, delivered one file
+// per shot. Names are the studio's own and are not in running order — the
+// order below is the cut, not the numbering.
+const NASHIK_HQ = "public/videos/homehero/hightQualityClips/";
 
 export const MEDIA = [
   {
@@ -48,59 +60,45 @@ export const MEDIA = [
   },
   {
     slug: "nashik-villa",
-    source: "public/videos/240297- Full Render Clip.mp4",
-    // This master is a 4:33 reel, not a continuous move: 13.5s of stock
-    // hillside footage carrying the title cards, then 40 hard-cut shots, then
-    // a "Thank You" card. The hero uses a 5-shot cut of it — arrival, the
-    // lobby, the two living-room angles that read best, then the pool deck
-    // reached from that room — rather than the full walkthrough: fewer cuts
-    // inside a hero-length scroll reads far calmer than strobing through all
-    // 40 (see git history for that longer cut, if it's wanted again).
+    // Built from the studio's per-shot 4K masters, not the 240297 reel this
+    // set used to come from. That reel was a 1080p export with the studio's
+    // logo burnt into the top-left and a caption chip burnt into every shot,
+    // which cost a 122px top crop plus an inpainting pass
+    // (scripts/remove-captions.py) and still left the frames soft. These
+    // clips are clean 3840x2160 masters — no overlays, no crop, no inpaint.
     //
-    // Several of the reel's shot changes fade through black rather than cut,
-    // and a window straddling one bakes black frames into the middle of the
-    // scrub. Measured dips in this master, all avoided below:
-    //   12.70-14.30  20.20-20.90  34.50-35.00
-    //   103.00-105.20  162.30-162.60  268.00-273.50
-    // The editor burnt the studio's logo into the top-left of the picture at
-    // y 68-112 (measured by median-stacking frames from unrelated shots, so
-    // only the static overlay survives). ffmpeg's `delogo` was tried first and
-    // is unusable here — the mark sits over tree canopy on the opening shot
-    // and interpolating it produces vertical smears far worse than the logo.
-    // Cropping it off is clean; the cost is that the frame gets wider, so
-    // filling the viewport crops ~20% off the sides.
-    cropTop: 122,
+    // This order is the studio's own, sent as their "Sequence for the Cover
+    // Page" — six shots, not a cut assembled here. Do not reorder it or add
+    // to it without them: the four clips left out (8, 12, Clip 4, Clip 7)
+    // were dropped by them, not for any technical reason.
+    //
+    // It happens to run day -> dusk and outside -> inside -> outside, so no
+    // extra work is needed to stop the light jumping backwards across a cut.
     segments: [
-      { start: 21.1, end: 27.1, label: "Front entrance" },
-      // The beat that makes the cut into the house read as a walk rather than
-      // a jump: this shot is the room between the front door and the living
-      // room, and the living room's own sofa and dining area are visible at
-      // its left edge, so the following shot lands somewhere already seen.
-      { start: 132.5, end: 138.9, label: "Entrance lobby" },
-      { start: 105.5, end: 111.5, label: "Living room" },
-      { start: 125.7, end: 132.0, label: "Living room, pool-facing" },
-      { start: 66.8, end: 73.5, label: "Pool deck with screen" },
+      { source: `${NASHIK_HQ}Clip 1.mp4`, label: "Street arrival" },
+      { source: `${NASHIK_HQ}Clip 10.mp4`, label: "Front entrance" },
+      { source: `${NASHIK_HQ}6.mp4`, label: "Living room" },
+      { source: `${NASHIK_HQ}7.mp4`, label: "Entrance lobby" },
+      { source: `${NASHIK_HQ}Clip 11.mp4`, label: "Pool deck" },
+      { source: `${NASHIK_HQ}Clip 6.mp4`, label: "Covered walkway" },
     ],
-    // Every shot also carries a burnt-in caption chip ("Living Room",
-    // "Backyard", etc.) bottom-left or bottom-right. Run
-    // `python scripts/remove-captions.py nashik-villa` right after this
-    // build — it detects the chip by its text (edge-detects the glyphs, not
-    // the chip's background colour, since the background isn't reliably
-    // darker than the scene behind it — the entrance shot's chip sits on
-    // asphalt nearly as dark as the chip itself) and inpaints over it.
-    // `--force` on this script alone re-runs it without rebuilding frames.
     // 30 frames per shot, held constant as shots are added or dropped so the
-    // apparent camera speed stays the same across edits — 4 shots wanted 120,
-    // these 5 want 150.
-    frames: 150,
-    // A short cut affords real quality: this was 54 when the set covered 15
-    // shots over 45s and needed to stay small. At q70/1280px, measured
-    // 70KB/frame on this footage (vs. 56KB at the old 54) — 150 frames lands
-    // at ~10.5MB, still under the old 15-shot set despite the higher setting,
-    // because there is much less footage to cover.
-    frameQuality: 70,
-    // The establishing shot the sequence now opens on.
-    posterAt: 24.1,
+    // apparent camera speed stays the same across edits — six shots want 180.
+    // They are shared out by shot length rather than evenly, so the longer
+    // clips do not appear to speed up.
+    frames: 180,
+    // Worth spending here in a way the old reel never was: at 1080p, asking
+    // for more than 1280px only enlarged the master's own compression. From
+    // a 4K source 1600px is real detail, and it is the width at which the
+    // canvas stops softening on a 1440p laptop.
+    frameWidth: 1600,
+    frameQuality: 72,
+    // The dusk pool deck, not the opening shot. This still is only ever seen
+    // in lite mode (phones, reduced-motion, data-saver), where it stands in
+    // for the whole sequence — so it should be the most striking frame in
+    // the film, not the one the scrub happens to start on.
+    posterSource: `${NASHIK_HQ}Clip 11.mp4`,
+    posterAt: 3,
   },
   {
     slug: "apti-villa",
