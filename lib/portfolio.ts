@@ -109,11 +109,21 @@ export const INTERNATIONAL_CLIENTS = CLIENT_LOGOS.filter(
 export const OFFICE_PHOTOS: string[] = generated.office;
 
 /**
+ * Portraits pulled from the profile that the studio has asked not to show.
+ * Filtered here rather than removed from portfolio.generated.json, because
+ * that file is rebuilt from the source PDF by scripts/extract-pdf-assets.py
+ * and an edit made there would silently come back on the next run.
+ */
+const WITHHELD_PORTRAITS = ["/team/member-04.jpg"];
+
+/**
  * Studio staff portraits from the profile's team page. The profile does not
  * caption them, so they are shown as an unnamed ensemble until the studio
  * supplies names and roles.
  */
-export const TEAM_PORTRAITS: string[] = generated.team;
+export const TEAM_PORTRAITS: string[] = generated.team.filter(
+  (src) => !WITHHELD_PORTRAITS.includes(src)
+);
 
 /**
  * The founders as they appear on the profile's own team page. Kept separate

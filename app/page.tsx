@@ -3,7 +3,6 @@ import { Clients } from "@/components/clients";
 import { Footer } from "@/components/footer";
 import { Founders } from "@/components/founders";
 import { Hero } from "@/components/hero";
-import { LaunchGate } from "@/components/launch-gate";
 import { ScrollScrubClient } from "@/components/scroll-scrub-loader";
 import { MotionProvider } from "@/components/motion-provider";
 import { ScrollProgressBar } from "@/components/motion-primitives";
@@ -17,7 +16,10 @@ import { Testimonials } from "@/components/testimonials";
 export default function Page() {
   return (
     <MotionProvider>
-      <LaunchGate />
+      {/* The city-poster splash (<LaunchGate />) is parked, not deleted: the
+          site is to open straight on the home page for now. The component and
+          its /launch-sequence page are still there, so putting it back is a
+          one-line change. */}
       <ScrollProgressBar />
       <Navbar />
       <main className="flex-1">

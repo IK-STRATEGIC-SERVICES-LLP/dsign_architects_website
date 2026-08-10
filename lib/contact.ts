@@ -4,7 +4,7 @@
 
 export const STUDIO_PHONE = "+91 96076 97369";
 export const STUDIO_PHONE_HREF = "tel:+919607697369";
-export const STUDIO_EMAIL = "dsignarchitects@outlook.com";
+export const STUDIO_EMAIL = "info@dsignarchitects.com";
 export const STUDIO_EMAIL_HREF = `mailto:${STUDIO_EMAIL}`;
 export const STUDIO_ADDRESS =
   "Flat no 201, Leena Manik Apartment, near Shantai Hotel, Rasta Peth, Pune - 411011";

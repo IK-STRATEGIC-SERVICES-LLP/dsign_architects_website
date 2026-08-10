@@ -65,7 +65,7 @@ export function CTA() {
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a
-                href="mailto:dsignarchitects@outlook.com?subject=Project%20Enquiry"
+                href={`${STUDIO_EMAIL_HREF}?subject=Project%20Enquiry`}
                 className="group inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-gradient-to-r from-gold to-gold-soft px-8 py-4 text-sm font-semibold text-ink transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
               >
                 Contact Us

@@ -375,11 +375,16 @@ export function ScrollScrub({
               transition={{ duration: 1.2, ease: easeLuxe }}
               className="absolute bottom-[22%] right-[6%]"
             >
+              {/* The vector lockup, not the raster master: this is the one
+                  place the mark is drawn large — up to 360px wide from a
+                  1029px source — so the PNG's edges were visibly stepped
+                  here in a way they never are at navbar size. on-dark keeps
+                  the pale wordmark the shadow stack above is tuned for. */}
               <Image
-                src="/logo.png"
+                src="/brand/dsign-logo-on-dark.svg"
                 alt=""
-                width={1029}
-                height={242}
+                width={1017}
+                height={207}
                 priority
                 unoptimized
                 // A tight, dense halo rather than a wide diffuse one: the

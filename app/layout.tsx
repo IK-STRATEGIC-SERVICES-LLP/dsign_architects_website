@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { BlueprintSheet } from "@/components/blueprint-sheet";
-import { INSTAGRAM_URL, MAPS_URL } from "@/lib/contact";
+import { INSTAGRAM_URL, MAPS_URL, STUDIO_EMAIL } from "@/lib/contact";
 import "./globals.css";
 
 // Titles: a high-contrast old-style serif, standing in for the Tan Aegean
@@ -76,7 +76,7 @@ const ORGANIZATION_JSON_LD = {
   name: "D'Sign Architects",
   description: SITE_DESCRIPTION,
   url: SITE_URL,
-  email: "dsignarchitects@outlook.com",
+  email: STUDIO_EMAIL,
   telephone: "+91-9607697369",
   address: {
     "@type": "PostalAddress",
