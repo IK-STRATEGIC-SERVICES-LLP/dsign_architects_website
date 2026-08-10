@@ -62,9 +62,9 @@ function LinkedInIcon({ className }: { className?: string }) {
   );
 }
 
-// The studio was founded in 2015, so the notice runs as a range from then to
-// the current year rather than the current year alone — that is what actually
-// claims the back catalogue. Same date the hero's "Established" stat cites.
+// The studio's founding year, which is what the copyright notice carries —
+// the studio's call, in preference to the current year or a range to it. Same
+// date the hero's "Established" stat cites.
 const FOUNDED_YEAR = 2015;
 
 const SOCIALS = [
@@ -159,8 +159,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col items-center gap-1 border-t border-white/10 pt-6 text-center text-sm text-mist md:flex-row md:justify-between md:text-left">
           <p>
-            &copy; {FOUNDED_YEAR}&ndash;{new Date().getFullYear()}{" "}
-            D&rsquo;Sign Architects. All rights reserved.
+            &copy; {FOUNDED_YEAR}{" "}D&rsquo;Sign Architects. All rights reserved.
           </p>
           <p>
             Developed by{" "}
