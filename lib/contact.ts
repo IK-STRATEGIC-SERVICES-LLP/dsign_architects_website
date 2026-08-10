@@ -18,3 +18,5 @@ export const MAPS_URL =
 
 export const INSTAGRAM_URL = "https://www.instagram.com/dsignarchitects/";
 export const INSTAGRAM_HANDLE = "@dsignarchitects";
+
+export const LINKEDIN_URL = "https://www.linkedin.com/company/dsign-architects/";
