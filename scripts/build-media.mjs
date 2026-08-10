@@ -66,8 +66,37 @@ function allocate(segments, total) {
   return counts;
 }
 
+/** Length of a master in seconds, read off ffmpeg's stream table. */
+async function probeDuration(src) {
+  const { stderr } = await run(ffmpegPath, ["-hide_banner", "-i", src]).catch(
+    (e) => ({ stderr: e.stderr ?? "" })
+  );
+  const m = /Duration: (\d+):(\d+):(\d+\.?\d*)/.exec(stderr);
+  if (!m) throw new Error(`could not read duration of ${path.basename(src)}`);
+  return Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]);
+}
+
+/**
+ * Fills in the defaults a segment is allowed to omit, so the rest of the build
+ * can assume every segment names a file and a concrete window into it:
+ * `source` falls back to the entry's, and a segment with no `start`/`end` means
+ * the whole clip — which is the normal case when the studio delivers each shot
+ * as its own file rather than one long reel.
+ */
+async function resolveSegments(entry) {
+  const out = [];
+  for (const seg of entry.segments) {
+    const source = seg.source ?? entry.source;
+    if (!source) throw new Error(`segment "${seg.label ?? "?"}" has no source`);
+    const start = seg.start ?? 0;
+    const end = seg.end ?? (await probeDuration(path.join(ROOT, source)));
+    out.push({ ...seg, source, start, end });
+  }
+  return out;
+}
+
 async function buildOne(entry) {
-  const { slug, source, start, duration, segments, frames, posterAt } = entry;
+  const { slug, source, start, duration, frames, posterAt } = entry;
   const quality = entry.frameQuality ?? FRAME_QUALITY;
   const width = entry.frameWidth ?? FRAME_WIDTH;
   // Rows trimmed off the top of the source, for masters with a logo or caption
@@ -75,9 +104,21 @@ async function buildOne(entry) {
   // source pixels.
   const cropTop = entry.cropTop ?? 0;
   const crop = cropTop ? `crop=iw:ih-${cropTop}:0:${cropTop},` : "";
-  const src = path.join(ROOT, source);
-  if (!existsSync(src)) {
-    console.error(`  ✗ ${slug}: master not found — ${source}`);
+  const segments = entry.segments ? await resolveSegments(entry) : undefined;
+  // The poster may come from a different clip than the frames when the shots
+  // are delivered as separate files — the opening shot rarely makes the best
+  // still.
+  const posterSource = entry.posterSource ?? source;
+
+  const needed = [
+    ...(segments ? segments.map((s) => s.source) : [source]),
+    posterSource,
+  ];
+  const missing = [...new Set(needed)].filter(
+    (rel) => !rel || !existsSync(path.join(ROOT, rel))
+  );
+  if (missing.length) {
+    console.error(`  ✗ ${slug}: master(s) not found — ${missing.join(", ")}`);
     return false;
   }
 
@@ -94,7 +135,7 @@ async function buildOne(entry) {
 
   // Frame sequence. -ss before -i seeks fast; fps filter spreads the
   // requested frame count evenly across the chosen stretch of footage.
-  const extract = (from, length, count, pattern) =>
+  const extract = (from, length, count, pattern, src) =>
     run(
       ffmpegPath,
       [
@@ -127,7 +168,13 @@ async function buildOne(entry) {
       await mkdir(stage, { recursive: true });
 
       const length = seg.end - seg.start;
-      await extract(seg.start, length, counts[s], path.join(stage, "%04d.webp"));
+      await extract(
+        seg.start,
+        length,
+        counts[s],
+        path.join(stage, "%04d.webp"),
+        path.join(ROOT, seg.source)
+      );
 
       const got = (await readdir(stage)).filter((f) => f.endsWith(".webp")).sort();
       for (const f of got) {
@@ -143,7 +190,13 @@ async function buildOne(entry) {
       );
     }
   } else {
-    await extract(start, duration, frames, path.join(framesDir, "%04d.webp"));
+    await extract(
+      start,
+      duration,
+      frames,
+      path.join(framesDir, "%04d.webp"),
+      path.join(ROOT, source)
+    );
   }
 
   // Poster still — the first thing a visitor sees, so it gets a touch more
@@ -153,7 +206,7 @@ async function buildOne(entry) {
     [
       "-hide_banner", "-loglevel", "error", "-y",
       "-ss", String(posterAt),
-      "-i", src,
+      "-i", path.join(ROOT, posterSource),
       "-frames:v", "1",
       "-vf", `${crop}scale=${width}:-2`,
       "-c:v", "libwebp",
@@ -190,7 +243,14 @@ async function buildOne(entry) {
         width: Number(dim[1]) || width,
         height: Number(dim[2]) || Math.round((width * 9) / 16),
         ...(segments
-          ? { segments: segments.map(({ start: s, end, label }) => ({ start: s, end, label })) }
+          ? {
+              segments: segments.map(({ start: s, end, label, source: from }) => ({
+                start: s,
+                end,
+                label,
+                source: path.basename(from),
+              })),
+            }
           : { segment: { start, duration } }),
       },
       null,

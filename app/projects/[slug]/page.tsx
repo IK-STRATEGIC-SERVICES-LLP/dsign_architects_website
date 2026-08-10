@@ -52,7 +52,7 @@ export default async function ProjectPage({
             frameCount={project.media.frameCount}
             startFrame={project.media.startFrame}
             poster={project.image}
-            scrollLength={3.5}
+            scrollLength={project.media.scrollLength ?? 3.5}
             chapters={[{ kicker: project.category, title: project.title }]}
           />
         ) : null}

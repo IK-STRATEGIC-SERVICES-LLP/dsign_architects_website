@@ -23,18 +23,24 @@ export default function Page() {
       <ScrollProgressBar />
       <Navbar />
       <main className="flex-1">
-        {/* A 5-shot cut of the studio's Nashik villa: arrival, the entrance
-            lobby, the two living-room angles, then the pool deck reached from
-            that room. Deliberately wordless — the only thing laid over the
-            film is the studio's own logo on the opening frame, which clears
-            as soon as the walkthrough starts. frameCount must match
+        {/* A 10-shot walkthrough of the studio's Nashik villa, built from its
+            per-shot 4K masters: arrive from the street, up to the door,
+            through the lobby into the living rooms, then out to the pool deck
+            at dusk. Deliberately wordless — the only thing laid over the film
+            is the studio's own logo on the opening frame, which clears as
+            soon as the walkthrough starts. frameCount must match
             public/media/nashik-villa/meta.json — rerun build-media.mjs and
-            update both if the cut changes. */}
+            update both if the cut changes.
+
+            scrollLength is 8 rather than the 10 that would hold the old
+            5-shot cut's exact scrub speed: 1000vh is ten screens of scrolling
+            before the page proper begins, which is more than an opener should
+            ask for. At 8 the film runs about a quarter faster than before. */}
         <ScrollScrubClient
           slug="nashik-villa"
-          frameCount={150}
+          frameCount={300}
           poster="/media/nashik-villa/poster.webp"
-          scrollLength={5}
+          scrollLength={8}
           logo
           showScrollCue={false}
         />

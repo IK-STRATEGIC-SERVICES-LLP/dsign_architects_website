@@ -12,8 +12,16 @@ export type Project = {
   /**
    * Folder under /public/media holding the scroll-scrub frame sequence.
    * `startFrame` skips a leading title card where the film opens on one.
+   * `scrollLength` overrides the default 3.5 viewports of scrub, which is
+   * tuned for the ~120-frame sets — a longer sequence needs proportionally
+   * more scroll or it races past.
    */
-  media?: { slug: string; frameCount: number; startFrame?: number };
+  media?: {
+    slug: string;
+    frameCount: number;
+    startFrame?: number;
+    scrollLength?: number;
+  };
   /** Equirectangular 360° image (2:1), self-hosted under /public/panoramas. */
   panorama?: string;
 };
@@ -81,11 +89,13 @@ export const PROJECTS: Project[] = [
       "Sunken bonfire sit-out and water-edge barbeque deck",
       "Six bedrooms across ground and first floors",
     ],
-    // Same media folder as the homepage hero — currently a 5-shot cut
-    // (arrival, lobby, two living-room angles, pool deck), not the full
-    // walkthrough the description/highlights below describe. See
-    // media-manifest.mjs.
-    media: { slug: "nashik-villa", frameCount: 150 },
+    // Same media folder as the homepage hero: a 10-shot walkthrough built
+    // from the studio's per-shot 4K masters, running street arrival through
+    // to the pool deck at dusk. frameCount must match
+    // public/media/nashik-villa/meta.json. scrollLength is raised from the
+    // 3.5 the shorter sets use because this sequence is 2.5x their length —
+    // at 8 it scrubs at the same speed they do.
+    media: { slug: "nashik-villa", frameCount: 300, scrollLength: 8 },
   },
   {
     slug: "apti-hillside-estate",

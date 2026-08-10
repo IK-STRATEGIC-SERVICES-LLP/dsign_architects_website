@@ -276,8 +276,9 @@ export function ScrollScrub({
   }, [lite, ready, frameCount, first]);
 
   const activeChapter = chapter >= 0 ? chapters[chapter] : undefined;
-  // Whether anything is written over the film — the logo doesn't count, it
-  // carries its own scrim and has cleared within the first tenth of the scrub.
+  // Whether anything is written over the foot of the film — the logo doesn't
+  // count, it sits higher up, carries its own shadow, and has cleared within
+  // the first tenth of the scrub.
   const hasOverlayText = chapters.length > 0 || showScrollCue;
 
   return (
@@ -315,35 +316,46 @@ export function ScrollScrub({
         ) : null}
 
         {/* Cinematic grade, weighted to the edges rather than laid evenly over
-            the picture. How heavy it needs to be depends entirely on whether
-            anything is written on top: the caption grade runs to solid ink at
-            the bottom, which is a lot of frame to give up, and with nothing to
-            hold down it just reads as the render being murky. So a scrub with
-            no type over it gets a much lighter pass — enough to seat the
-            navbar, and nothing else.
+            the picture: a short pass at the top to seat the navbar, and a
+            gentle vignette. Nothing at the bottom.
 
-            No bottom band on purpose. These masters carry the editor's own
-            shot captions burnt into the picture — y 590-719 of 720 on 143 of
-            this film's 180 frames — and a grade heavy enough to bury them
-            costs the bottom fifth of every frame. The studio would rather
-            show the frame as shot and live with the captions, so leave the
-            lower part of the picture alone. */}
+            Scrubs with type over them get one extra layer at the foot, and
+            only those. It replaces a grade that ran to solid ink at the
+            bottom of the frame — that buried the bottom quarter of the
+            picture, which was a poor trade once the masters became clean 4K
+            renders.
+
+            It cannot be dropped altogether, though, and the type's own shadow
+            is not a substitute. Measured across this film, the frame behind
+            the caption reaches luma 198 mean and 252 peak on the lit paving
+            of the dusk shots. The porcelain title survives that on shadow
+            alone; the 11px gold kicker (rgb 217,164,65) does not come close —
+            it is the layer's binding constraint, and it fails WCAG AA even
+            with the old solid grade, at 2.31:1 worst case.
+
+            So the curve is shaped around the kicker's line at 80% depth,
+            where it holds the same 0.60 alpha the old grade had — the point
+            is to stop blacking out the picture, not to make the type harder
+            to read than it already was. Everywhere else it is lighter than
+            before, and it tops out at 0.72 instead of solid, so the foot of
+            the frame still reads where previously there was nothing to see.
+            Raising the kicker to AA needs ~0.76 alpha, which is essentially
+            the old wash back again — a colour or size change to the kicker
+            would buy it far more cheaply. */}
         <div
           aria-hidden
-          className={
-            hasOverlayText
-              ? "pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/45 via-transparent to-ink"
-              : "pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(8,13,23,0.36)_0%,transparent_22%,transparent_100%)]"
-          }
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(8,13,23,0.36)_0%,transparent_22%,transparent_100%)]"
         />
         <div
           aria-hidden
-          className={
-            hasOverlayText
-              ? "pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_58%,rgba(8,13,23,0.45)_100%)]"
-              : "pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_70%,rgba(8,13,23,0.26)_100%)]"
-          }
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_70%,rgba(8,13,23,0.26)_100%)]"
         />
+        {hasOverlayText ? (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent_55%,rgba(8,13,23,0.6)_80%,rgba(8,13,23,0.72)_100%)]"
+          />
+        ) : null}
         {/* Flat variant deliberately — see globals.css. The canvas underneath
             repaints on every scroll, and a blended layer over it re-blends
             each time. */}
@@ -364,11 +376,12 @@ export function ScrollScrub({
             aria-hidden
             className="pointer-events-none absolute inset-0 z-20"
           >
-            {/* Bottom-right, clear of the navbar. Held at 22% up from the
-                bottom rather than in the corner: the burnt-in shot captions
-                occupy the bottom 18% of the picture and swap between the left
-                and right corners from shot to shot, so anything lower would
-                land on top of one. */}
+            {/* Bottom-right, clear of the navbar. The 22% inset started as
+                clearance for burnt-in shot captions that the current masters
+                no longer carry, so dropping the mark nearer the corner is now
+                open if it is ever wanted. Kept where it is because it also
+                sits the mark on the frame's lower third rather than jammed
+                into the corner, which is the better placement regardless. */}
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -407,7 +420,11 @@ export function ScrollScrub({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -16 }}
                   transition={{ duration: 0.35, ease: easeLuxe }}
-                  className="flex flex-col items-center"
+                  // A tight halo plus one wide soft pass, inherited by both
+                  // lines. This has to hold pale type over the brightest
+                  // frames in these films — sunlit curtains, white sofas —
+                  // where a single soft glow simply washes out.
+                  className="flex flex-col items-center [text-shadow:0_1px_2px_rgba(8,13,23,0.95),0_0_10px_rgba(8,13,23,0.9),0_0_30px_rgba(8,13,23,0.75)]"
                 >
                   <span className="mb-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-gold">
                     {activeChapter.kicker}
@@ -425,7 +442,9 @@ export function ScrollScrub({
           <motion.div
             animate={{ opacity: cueVisible ? 1 : 0 }}
             transition={{ duration: 0.4 }}
-            className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex flex-col items-center gap-2 text-mist/70"
+            // drop-shadow rather than the caption's text-shadow: the chevron
+            // is an SVG, which text-shadow does not touch.
+            className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex flex-col items-center gap-2 text-mist/70 [filter:drop-shadow(0_1px_2px_rgba(8,13,23,0.95))_drop-shadow(0_0_10px_rgba(8,13,23,0.85))]"
           >
             <span className="text-[10px] uppercase tracking-[0.3em]">
               Scroll to explore

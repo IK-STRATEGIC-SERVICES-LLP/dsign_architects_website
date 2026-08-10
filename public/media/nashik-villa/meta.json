@@ -1,33 +1,68 @@
 {
   "slug": "nashik-villa",
-  "frameCount": 150,
-  "width": 1280,
-  "height": 598,
+  "frameCount": 300,
+  "width": 1600,
+  "height": 900,
   "segments": [
     {
-      "start": 21.1,
-      "end": 27.1,
-      "label": "Front entrance"
+      "start": 0,
+      "end": 5.1,
+      "label": "Street arrival",
+      "source": "Clip 1.mp4"
     },
     {
-      "start": 132.5,
-      "end": 138.9,
-      "label": "Entrance lobby"
+      "start": 0,
+      "end": 5.1,
+      "label": "Front entrance",
+      "source": "Clip 10.mp4"
     },
     {
-      "start": 105.5,
-      "end": 111.5,
-      "label": "Living room"
+      "start": 0,
+      "end": 4.1,
+      "label": "Entrance lobby",
+      "source": "7.mp4"
     },
     {
-      "start": 125.7,
-      "end": 132,
-      "label": "Living room, pool-facing"
+      "start": 0,
+      "end": 4.1,
+      "label": "Lobby, living-room side",
+      "source": "8.mp4"
     },
     {
-      "start": 66.8,
-      "end": 73.5,
-      "label": "Pool deck with screen"
+      "start": 0,
+      "end": 4.1,
+      "label": "Living room",
+      "source": "6.mp4"
+    },
+    {
+      "start": 0,
+      "end": 4.1,
+      "label": "Family lounge",
+      "source": "12.mp4"
+    },
+    {
+      "start": 0,
+      "end": 5.1,
+      "label": "Covered walkway",
+      "source": "Clip 6.mp4"
+    },
+    {
+      "start": 0,
+      "end": 5.1,
+      "label": "Rear elevation",
+      "source": "Clip 4.mp4"
+    },
+    {
+      "start": 0,
+      "end": 6.1,
+      "label": "Pool deck",
+      "source": "Clip 11.mp4"
+    },
+    {
+      "start": 0,
+      "end": 5.1,
+      "label": "Pool deck with screen",
+      "source": "Clip 7.mp4"
     }
   ]
 }

@@ -3,8 +3,12 @@ etc.) from a built frame sequence, in place — run right after build-media.mjs
 for any slug whose master carries these:
 
     pip install opencv-python-headless numpy
-    python scripts/remove-captions.py nashik-villa
-    python scripts/remove-captions.py nashik-villa --review   # sample only, no writes
+    python scripts/remove-captions.py <slug>
+    python scripts/remove-captions.py <slug> --review   # sample only, no writes
+
+Only run this on a set whose master actually carries the chips. nashik-villa
+used to and no longer does — it is now built from per-shot masters with
+nothing burnt into them — so running it there would inpaint clean frames.
 
 Only ever run this on a freshly built sequence. It overwrites frames in
 place, so running it twice inpaints already-inpainted pixels and compounds
