@@ -69,7 +69,7 @@ export function Navbar() {
             href="/#contact"
             className="rounded-full bg-gradient-to-r from-gold to-gold-soft px-5 py-2.5 text-sm font-semibold text-ink transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
           >
-            Start a Project
+            Contact Us
           </a>
         </div>
 
@@ -109,7 +109,7 @@ export function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className="mt-2 rounded-xl bg-gradient-to-r from-gold to-gold-soft px-4 py-3 text-center text-base font-semibold text-ink"
               >
-                Start a Project
+                Contact Us
               </a>
             </div>
           </motion.div>
