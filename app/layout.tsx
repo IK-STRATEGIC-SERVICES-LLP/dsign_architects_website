@@ -7,6 +7,7 @@ import {
   MAPS_URL,
   STUDIO_EMAIL,
 } from "@/lib/contact";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 // Titles: a high-contrast old-style serif, standing in for the Tan Aegean
@@ -28,7 +29,6 @@ const inter = Inter({
   display: "swap",
 });
 
-const SITE_URL = "https://www.dsignarchitects.com";
 const SITE_TITLE = "D'sign Architects — Architecture, Interiors & EPC Delivery";
 const SITE_DESCRIPTION =
   "Founded in 2015, D'sign Architects is a Pune-based multidisciplinary practice offering architecture, structural and MEP design, interiors, landscape, master planning, project management and full EPC delivery across India and overseas.";

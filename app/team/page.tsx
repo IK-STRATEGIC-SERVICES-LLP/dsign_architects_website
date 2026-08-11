@@ -5,12 +5,14 @@ import { MotionProvider } from "@/components/motion-provider";
 import { ScrollProgressBar } from "@/components/motion-primitives";
 import { Navbar } from "@/components/navbar";
 import { Team } from "@/components/team";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/team",
   title: "Our Team — D'sign Architects",
   description:
     "Meet the architects, engineers, interior designers and site staff behind D'sign Architects — hands-on from first sketch to final handover on every project.",
-};
+});
 
 export default function TeamPage() {
   return (

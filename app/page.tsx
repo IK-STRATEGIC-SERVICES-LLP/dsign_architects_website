@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer";
 import { Founders } from "@/components/founders";
 import { Hero } from "@/components/hero";
 import { ScrollScrubClient } from "@/components/scroll-scrub-loader";
+import { mobileMediaFor } from "@/lib/projects";
 import { MotionProvider } from "@/components/motion-provider";
 import { ScrollProgressBar } from "@/components/motion-primitives";
 import { Navbar } from "@/components/navbar";
@@ -12,6 +13,10 @@ import { Projects } from "@/components/projects";
 import { Services } from "@/components/services";
 import { Studio } from "@/components/studio";
 import { Testimonials } from "@/components/testimonials";
+
+// The hero film. Same set as the Nashik villa project page — frameCount must
+// match public/media/nashik-villa/meta.json.
+const HERO_MEDIA = { slug: "nashik-villa", frameCount: 180 };
 
 export default function Page() {
   return (
@@ -27,19 +32,28 @@ export default function Page() {
             built from its per-shot 4K masters: street, front elevation,
             living room, lobby, pool deck, covered walkway. The order is
             theirs — see media-manifest.mjs before changing it. Deliberately
-            wordless: the only thing laid over the film is the studio's own
-            logo on the opening frame, which clears as soon as the sequence
-            starts. frameCount must match public/media/nashik-villa/meta.json
+            wordless: nothing is laid over the film at all. The opening-frame
+            watermark was dropped — the navbar already carries the studio's
+            mark, so it was a second copy of the same lockup over the work.
+            The `logo` prop is still there if it is ever wanted back.
+            frameCount must match public/media/nashik-villa/meta.json
             — rerun build-media.mjs and update both if the cut changes.
 
             scrollLength 5 keeps the scrub at ~36 frames per viewport, the
-            speed this hero has always run at. */}
+            speed this hero has always run at.
+
+            `mobile` is the same six shots rebuilt for phones — 90 frames
+            cropped to 4:5, 2.8MB against the desktop set's 20MB — shown as a
+            plate rather than full-bleed so the wide shots survive a portrait
+            screen. Without it phones fall back to the poster, which is what
+            they had before. It comes from the same helper the Nashik project
+            page uses, so the hero and that page cannot drift apart. */}
         <ScrollScrubClient
-          slug="nashik-villa"
-          frameCount={180}
+          slug={HERO_MEDIA.slug}
+          frameCount={HERO_MEDIA.frameCount}
           poster="/media/nashik-villa/poster.webp"
           scrollLength={5}
-          logo
+          mobile={mobileMediaFor(HERO_MEDIA)}
           showScrollCue={false}
         />
         <Hero />

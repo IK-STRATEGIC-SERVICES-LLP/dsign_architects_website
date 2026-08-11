@@ -1,0 +1,32 @@
+{
+  "slug": "shiv-shrushti-mobile",
+  "frameCount": 90,
+  "width": 640,
+  "height": 800,
+  "segments": [
+    {
+      "start": 9,
+      "end": 29,
+      "label": "Left — approach along the ramparts",
+      "source": "01. Shiv Shrushti - Landmark of Baramati.mov"
+    },
+    {
+      "start": 66,
+      "end": 83,
+      "label": "Right — warrior niches and fountains",
+      "source": "01. Shiv Shrushti - Landmark of Baramati.mov"
+    },
+    {
+      "start": 54,
+      "end": 64,
+      "label": "Middle — the gateway head-on",
+      "source": "01. Shiv Shrushti - Landmark of Baramati.mov"
+    },
+    {
+      "start": 86,
+      "end": 97.4,
+      "label": "Gates open (reversed)",
+      "source": "01. Shiv Shrushti - Landmark of Baramati.mov"
+    }
+  ]
+}

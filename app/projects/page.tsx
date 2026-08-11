@@ -17,12 +17,14 @@ import { PortfolioGrid } from "@/components/portfolio-grid";
 import { ProjectsCarousel } from "@/components/projects-carousel";
 import { PROJECTS } from "@/lib/projects";
 import { PORTFOLIO_PROJECTS, countByCategory } from "@/lib/portfolio";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/projects",
   title: "Projects — D'sign Architects",
   description:
     "Master planning, landscape, government, commercial, institutional, residential and interior projects delivered by D'sign Architects across India and overseas.",
-};
+});
 
 export default function ProjectsIndexPage() {
   const totals = countByCategory();

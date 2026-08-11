@@ -51,9 +51,22 @@ export function Studio() {
             className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10"
           >
             <motion.div style={{ y }} className="absolute -inset-y-[10%] inset-x-0">
+              {/* The Nashik villa's dusk pool deck, cut to 4:5 from the
+                  studio's own 4K master (hightQualityClips/Clip 11.mp4 at
+                  3s) so it fills this portrait frame without being cropped
+                  to a slice:
+
+                    ffmpeg -ss 3 -i "<master>" -frames:v 1 \
+                      -vf "crop=ih*0.8:ih,scale=1200:-2" \
+                      -c:v libwebp -quality 86 -preset photo \
+                      public/studio/studio-quote.webp
+
+                  It replaces the apti-villa poster, which was a night aerial
+                  — dark and low-contrast behind the quote card, and carrying
+                  the studio's phone number burnt into the corner. */}
               <Image
-                src="/media/apti-villa/poster.webp"
-                alt="Facade of a modern building designed with layered glass and stone"
+                src="/studio/studio-quote.webp"
+                alt="Dusk pool deck of the Nashik villa, with a sunken fire pit and lit pergola"
                 fill
                 sizes="(min-width: 1024px) 45vw, 100vw"
                 className="object-cover"

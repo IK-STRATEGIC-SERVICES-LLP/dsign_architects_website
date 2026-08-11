@@ -6,11 +6,14 @@ import { Navbar } from "@/components/navbar";
 import { MotionProvider } from "@/components/motion-provider";
 import { Reveal, ScrollProgressBar } from "@/components/motion-primitives";
 import { PROPERTIES } from "@/lib/properties";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: "/properties",
   title: "Properties Gallery — D'Sign Architects",
-  description: "Explore our collection of residential, commercial, and cultural properties with interactive 3D models and 360° panoramic views.",
-};
+  description:
+    "Explore our collection of residential, commercial, and cultural properties with interactive 3D models and 360° panoramic views.",
+});
 
 export default function PropertiesPage() {
   return (

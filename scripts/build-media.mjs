@@ -4,6 +4,7 @@
 //   node scripts/build-media.mjs            # build anything missing
 //   node scripts/build-media.mjs --force    # rebuild everything
 //   node scripts/build-media.mjs ulwe-penthouse   # rebuild one slug
+//   node scripts/build-media.mjs --posters  # redo posters only, keep frames
 //
 // Output per slug in public/media/<slug>/:
 //   frames/0001.webp …   scroll-scrubbed sequence
@@ -27,6 +28,11 @@ const OUT_ROOT = path.join(ROOT, "public", "media");
 
 const args = process.argv.slice(2);
 const force = args.includes("--force");
+// Choosing a poster is picking a still, and it wants iterating on. Extracting
+// several hundred frames again each time you try a different second of the
+// film would make that unbearable, so this redoes the poster alone and leaves
+// frames/ and meta.json exactly as they are.
+const postersOnly = args.includes("--posters");
 const only = args.filter((a) => !a.startsWith("--"));
 
 function fmtBytes(n) {
@@ -103,17 +109,50 @@ async function buildOne(entry) {
   // burnt into the picture. Applied before scaling, so it is expressed in
   // source pixels.
   const cropTop = entry.cropTop ?? 0;
-  const crop = cropTop ? `crop=iw:ih-${cropTop}:0:${cropTop},` : "";
+  // Centre crop to a target aspect (width / height), for the phone-sized
+  // builds. ffmpeg's crop centres by default when x/y are omitted, so the
+  // shot keeps its own centre of interest rather than one chosen here.
+  // Only ever narrows: a value above the source's own aspect would ask for
+  // more width than exists and ffmpeg would refuse.
+  const cropAspect = entry.cropAspect ?? 0;
+  const cropChain = [
+    cropTop ? `crop=iw:ih-${cropTop}:0:${cropTop}` : null,
+    cropAspect ? `crop=ih*${cropAspect}:ih` : null,
+  ].filter(Boolean);
+  const crop = cropChain.length ? `${cropChain.join(",")},` : "";
+
+  // Bands trimmed off the poster only, as a fraction of height. Most of these
+  // masters carry burnt-in furniture the studio cannot remove from the film —
+  // their own mark and phone number along the top, shot captions across the
+  // foot, and on the Lucknow villa another practice's logo entirely. Inside
+  // the scrub that furniture is the film and has to be lived with, but the
+  // poster is the still that represents the project on the projects page and
+  // in cards, and it should carry none of it.
+  //
+  // Poster-only, so trimming here never reframes the sequence: the frames and
+  // the poster stop being the same crop, which is fine, they are used in
+  // different places and at different sizes.
+  const pTop = entry.posterCropTop ?? 0;
+  const pBottom = entry.posterCropBottom ?? 0;
+  const posterTrim =
+    pTop || pBottom
+      ? `crop=iw:ih*${(1 - pTop - pBottom).toFixed(4)}:0:ih*${pTop.toFixed(4)},`
+      : "";
+  // cropTop first (source pixels), then the poster bands, then the aspect
+  // crop last so the phone poster still centres on what survives.
+  const posterCrop =
+    (cropTop ? `crop=iw:ih-${cropTop}:0:${cropTop},` : "") +
+    posterTrim +
+    (cropAspect ? `crop=ih*${cropAspect}:ih,` : "");
   const segments = entry.segments ? await resolveSegments(entry) : undefined;
   // The poster may come from a different clip than the frames when the shots
   // are delivered as separate files — the opening shot rarely makes the best
   // still.
   const posterSource = entry.posterSource ?? source;
 
-  const needed = [
-    ...(segments ? segments.map((s) => s.source) : [source]),
-    posterSource,
-  ];
+  const needed = postersOnly
+    ? [posterSource]
+    : [...(segments ? segments.map((s) => s.source) : [source]), posterSource];
   const missing = [...new Set(needed)].filter(
     (rel) => !rel || !existsSync(path.join(ROOT, rel))
   );
@@ -125,8 +164,37 @@ async function buildOne(entry) {
   const outDir = path.join(OUT_ROOT, slug);
   const framesDir = path.join(outDir, "frames");
 
-  if (existsSync(path.join(outDir, "meta.json")) && !force) {
+  // Poster still — the project's representative image, used on the projects
+  // page and in cards, so it gets a touch more quality than sequence frames.
+  const writePoster = () =>
+    run(
+      ffmpegPath,
+      [
+        "-hide_banner", "-loglevel", "error", "-y",
+        "-ss", String(posterAt),
+        "-i", path.join(ROOT, posterSource),
+        "-frames:v", "1",
+        "-vf", `${posterCrop}scale=${width}:-2`,
+        "-c:v", "libwebp",
+        "-quality", "82",
+        "-preset", "photo",
+        path.join(outDir, "poster.webp"),
+      ],
+      { maxBuffer: 1024 * 1024 * 16 }
+    );
+
+  if (existsSync(path.join(outDir, "meta.json")) && !force && !postersOnly) {
     console.log(`  · ${slug}: already built (use --force to redo)`);
+    return true;
+  }
+
+  if (postersOnly) {
+    if (!existsSync(path.join(outDir, "meta.json"))) {
+      console.error(`  ✗ ${slug}: not built yet — run without --posters first`);
+      return false;
+    }
+    await writePoster();
+    console.log(`  ✓ ${slug}: poster redone at ${posterAt}s`);
     return true;
   }
 
@@ -177,6 +245,13 @@ async function buildOne(entry) {
       );
 
       const got = (await readdir(stage)).filter((f) => f.endsWith(".webp")).sort();
+      // `reverse` plays a window backwards. Not a trick for its own sake: a
+      // camera move that retreats through a gateway as the doors swing shut
+      // is, run the other way, the doors opening and the camera walking in —
+      // which is the shot the studio wanted to end on and never filmed. In a
+      // scroll-scrub the visitor drives the direction anyway, so nothing here
+      // reads as "played backwards" the way it would in a video.
+      if (seg.reverse) got.reverse();
       for (const f of got) {
         n++;
         await rename(
@@ -199,23 +274,7 @@ async function buildOne(entry) {
     );
   }
 
-  // Poster still — the first thing a visitor sees, so it gets a touch more
-  // quality than the sequence frames.
-  await run(
-    ffmpegPath,
-    [
-      "-hide_banner", "-loglevel", "error", "-y",
-      "-ss", String(posterAt),
-      "-i", path.join(ROOT, posterSource),
-      "-frames:v", "1",
-      "-vf", `${crop}scale=${width}:-2`,
-      "-c:v", "libwebp",
-      "-quality", "82",
-      "-preset", "photo",
-      path.join(outDir, "poster.webp"),
-    ],
-    { maxBuffer: 1024 * 1024 * 16 }
-  );
+  await writePoster();
 
   const written = (await readdir(framesDir)).filter((f) => f.endsWith(".webp")).sort();
   if (written.length === 0) {
@@ -241,7 +300,9 @@ async function buildOne(entry) {
         slug,
         frameCount: written.length,
         width: Number(dim[1]) || width,
-        height: Number(dim[2]) || Math.round((width * 9) / 16),
+        height:
+          Number(dim[2]) ||
+          Math.round(cropAspect ? width / cropAspect : (width * 9) / 16),
         ...(segments
           ? {
               segments: segments.map(({ start: s, end, label, source: from }) => ({
