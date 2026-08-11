@@ -1,0 +1,10 @@
+{
+  "slug": "apti-villa-mobile",
+  "frameCount": 60,
+  "width": 640,
+  "height": 800,
+  "segment": {
+    "start": 8,
+    "duration": 45
+  }
+}

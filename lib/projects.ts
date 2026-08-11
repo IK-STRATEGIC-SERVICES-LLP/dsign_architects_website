@@ -26,6 +26,31 @@ export type Project = {
   panorama?: string;
 };
 
+/** Plate aspect for the phone builds. Mirrors MOBILE_ASPECT in the manifest. */
+const MOBILE_ASPECT = 0.8;
+
+/**
+ * The phone build of a film, which every set in the manifest now has: same
+ * cut, cropped to a portrait plate, at half the frames.
+ *
+ * Derived rather than listed per project so there is one place the two builds
+ * can disagree instead of six. It has to match `mobileOf` in
+ * scripts/media-manifest.mjs — if that ever stops being "half the desktop
+ * count", check public/media/<slug>-mobile/meta.json and change both.
+ *
+ * scrollLength is a flat 3 rather than the desktop value: the phone sets are
+ * half the length, so reusing the desktop scroll would halve the apparent
+ * camera speed and leave the visitor scrolling twice as far for it.
+ */
+export function mobileMediaFor(media: NonNullable<Project["media"]>) {
+  return {
+    slug: `${media.slug}-mobile`,
+    frameCount: Math.round(media.frameCount / 2),
+    scrollLength: 3,
+    aspect: MOBILE_ASPECT,
+  };
+}
+
 // Descriptions are written from the studio's own presentation films — every
 // feature named below is visible in the renders. Years, areas and client
 // attributions are deliberately left out where the studio hasn't confirmed
@@ -44,7 +69,15 @@ export const PROJECTS: Project[] = [
       "Ceremonial forecourt with fountain court and processional steps",
       "Illuminated stonework designed to read by day and by firelight",
     ],
-    media: { slug: "shiv-shrushti", frameCount: 120 },
+    // 180 frames, up from 120: the cut now carries a second window in which
+    // the gateway's timber doors swing open and the camera passes through to
+    // the memorial avenue — the film's ending. See media-manifest.mjs.
+    //
+    // scrollLength rises with the count. Left at the 3.5 default these 180
+    // frames would run at 51 per viewport against the 34 this film has
+    // always scrubbed at, and the whole thing would race past in the same
+    // scroll distance as before.
+    media: { slug: "shiv-shrushti", frameCount: 180, scrollLength: 5.5 },
   },
   {
     slug: "yamai-devi-lake",
@@ -59,7 +92,14 @@ export const PROJECTS: Project[] = [
       "Sculpture wall, fountain plaza and shaded pergola courts",
       "Play areas, large swings and timber bridge crossings",
     ],
-    media: { slug: "yamai-lake", frameCount: 120 },
+    // startFrame 11 clears the title burnt into the opening seconds
+    // ("DEVELOPMENT OF YAMI AND GRAM LAKE" over the lake render), which
+    // frame 12 is the first to be free of. It has always been there; the
+    // portrait crop is what made it unmissable, since the centre cut lands
+    // mid-word. The studio's watermark and shot captions are burnt in
+    // throughout the film and cannot be skipped this way — though the crop
+    // does put the top-right mark outside the frame.
+    media: { slug: "yamai-lake", frameCount: 120, startFrame: 11 },
   },
   {
     slug: "ss-villa-lucknow",
@@ -124,7 +164,11 @@ export const PROJECTS: Project[] = [
       "Modular kitchen with full-height storage wall",
       "Three bedrooms plus a dedicated namaz room",
     ],
-    media: { slug: "ulwe-penthouse", frameCount: 150 },
+    // startFrame 5 skips the film's title card — four black frames carrying
+    // the client's name and address, which is neither the studio's work nor
+    // something to publish. Frame 6 is the first clean render. The manifest's
+    // `start: 4` was meant to trim this and lands a beat short.
+    media: { slug: "ulwe-penthouse", frameCount: 150, startFrame: 5 },
   },
 ];
 

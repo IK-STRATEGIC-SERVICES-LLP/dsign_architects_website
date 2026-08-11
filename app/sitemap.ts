@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 import { PROJECTS } from "@/lib/projects";
 import { PROPERTIES } from "@/lib/properties";
-
-const SITE_URL = "https://www.dsignarchitects.com";
+import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [

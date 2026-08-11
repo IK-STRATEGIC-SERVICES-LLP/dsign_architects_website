@@ -9,6 +9,7 @@ import { MotionProvider } from "@/components/motion-provider";
 import { Reveal, ScrollProgressBar } from "@/components/motion-primitives";
 import { Navbar } from "@/components/navbar";
 import { getPropertyBySlug, PROPERTIES } from "@/lib/properties";
+import { pageMetadata } from "@/lib/site";
 
 export function generateStaticParams() {
   return PROPERTIES.map((property) => ({ id: property.slug }));
@@ -22,10 +23,12 @@ export async function generateMetadata({
   const { id } = await params;
   const property = getPropertyBySlug(id);
   if (!property) return {};
-  return {
+  return pageMetadata({
+    path: `/properties/${property.slug}`,
     title: `${property.title} — D'Sign Architects`,
     description: property.description,
-  };
+    images: property.image ? [property.image] : undefined,
+  });
 }
 
 export default async function PropertyPage({

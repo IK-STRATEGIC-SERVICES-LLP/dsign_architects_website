@@ -1,0 +1,10 @@
+{
+  "slug": "ss-villa-lucknow-mobile",
+  "frameCount": 60,
+  "width": 640,
+  "height": 800,
+  "segment": {
+    "start": 10,
+    "duration": 45
+  }
+}

@@ -14,12 +14,14 @@ import {
 } from "@/components/motion-primitives";
 import { Navbar } from "@/components/navbar";
 import { OFFICE_PHOTOS, TEAM_PORTRAITS } from "@/lib/portfolio";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/studio",
   title: "Studio — D'sign Architects",
   description:
     "Founded in 2015 by Ar. Umar Kazi and Ar. Shaheer Tungekar, D'sign Architects is a multidisciplinary practice spanning architecture, structural and MEP design, interiors, landscape, master planning and EPC delivery.",
-};
+});
 
 export default function StudioPage() {
   const office = OFFICE_PHOTOS.slice(0, 6);

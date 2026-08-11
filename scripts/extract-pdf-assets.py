@@ -400,6 +400,12 @@ def main() -> None:
         save_jpeg(data["image"], dest, max_width=600)
         team.append(f"/team/member-{i:02d}.jpg")
     print(f"  team: {len(team)} staff + {len(founders)} founder portraits")
+    # These land unblurred, straight out of the profile PDF. The studio asked
+    # for staff to be unidentifiable on the site, so the portraits just
+    # rewritten above have to be put back through the blur pass before the
+    # site is deployed — and its regions re-checked by eye, since a new PDF
+    # means new crops and they are hard-coded per image.
+    print("  ! portraits are unblurred - run: python scripts/blur-team-faces.py")
 
     MANIFEST.parent.mkdir(parents=True, exist_ok=True)
     MANIFEST.write_text(

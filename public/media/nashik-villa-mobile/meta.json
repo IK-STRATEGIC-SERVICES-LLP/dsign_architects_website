@@ -1,0 +1,44 @@
+{
+  "slug": "nashik-villa-mobile",
+  "frameCount": 90,
+  "width": 640,
+  "height": 800,
+  "segments": [
+    {
+      "start": 0,
+      "end": 5.1,
+      "label": "Street arrival",
+      "source": "Clip 1.mp4"
+    },
+    {
+      "start": 0,
+      "end": 5.1,
+      "label": "Front entrance",
+      "source": "Clip 10.mp4"
+    },
+    {
+      "start": 0,
+      "end": 4.1,
+      "label": "Living room",
+      "source": "6.mp4"
+    },
+    {
+      "start": 0,
+      "end": 4.1,
+      "label": "Entrance lobby",
+      "source": "7.mp4"
+    },
+    {
+      "start": 0,
+      "end": 6.1,
+      "label": "Pool deck",
+      "source": "Clip 11.mp4"
+    },
+    {
+      "start": 0,
+      "end": 5.1,
+      "label": "Covered walkway",
+      "source": "Clip 6.mp4"
+    }
+  ]
+}

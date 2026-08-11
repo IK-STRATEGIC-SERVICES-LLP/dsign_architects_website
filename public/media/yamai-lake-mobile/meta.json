@@ -1,0 +1,10 @@
+{
+  "slug": "yamai-lake-mobile",
+  "frameCount": 60,
+  "width": 640,
+  "height": 800,
+  "segment": {
+    "start": 12,
+    "duration": 45
+  }
+}

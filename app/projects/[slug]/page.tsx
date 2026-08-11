@@ -10,7 +10,8 @@ import { ScrollScrubClient } from "@/components/scroll-scrub-loader";
 import { MotionProvider } from "@/components/motion-provider";
 import { Reveal, ScrollProgressBar } from "@/components/motion-primitives";
 import { Navbar } from "@/components/navbar";
-import { getProjectBySlug, PROJECTS } from "@/lib/projects";
+import { getProjectBySlug, mobileMediaFor, PROJECTS } from "@/lib/projects";
+import { pageMetadata } from "@/lib/site";
 
 export function generateStaticParams() {
   return PROJECTS.map((project) => ({ slug: project.slug }));
@@ -24,10 +25,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = getProjectBySlug(slug);
   if (!project) return {};
-  return {
+  return pageMetadata({
+    path: `/projects/${project.slug}`,
     title: `${project.title} — D'Sign Architects`,
     description: project.description,
-  };
+    // The project's own poster rather than the site-wide card, so a shared
+    // link previews the building it is about.
+    images: [project.image],
+  });
 }
 
 export default async function ProjectPage({
@@ -45,7 +50,13 @@ export default async function ProjectPage({
       <Navbar />
       <main className="flex-1">
         {/* Scrolling scrubs through this project's own presentation film,
-            mirroring the homepage hero. */}
+            mirroring the homepage hero — including on phones, which now get
+            the portrait plate build rather than a static poster.
+
+            No caption over the film. The project's name and category are
+            already set in type immediately below it, and repeating them on
+            the hero only put a second copy of the same words over the work.
+            `chapters` is still supported for films that want shot titles. */}
         {project.media ? (
           <ScrollScrubClient
             slug={project.media.slug}
@@ -53,7 +64,7 @@ export default async function ProjectPage({
             startFrame={project.media.startFrame}
             poster={project.image}
             scrollLength={project.media.scrollLength ?? 3.5}
-            chapters={[{ kicker: project.category, title: project.title }]}
+            mobile={mobileMediaFor(project.media)}
           />
         ) : null}
 

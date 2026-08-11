@@ -25,22 +25,51 @@
 // order below is the cut, not the numbering.
 const NASHIK_HQ = "public/videos/homehero/hightQualityClips/";
 
-export const MEDIA = [
+const DESKTOP = [
   {
     slug: "ulwe-penthouse",
     source: "public/videos/homehero/PROPOSED INTERIOR WORK FOR 4 BHK PENT HOUSE AT 12th FLOOR ULWE FOR Mr. FAYAZ MUJAHID. (1).mp4",
     start: 4,
     duration: 46,
     frames: 150,
+    // The living room, and the studio's mark and phone number cropped off the
+    // top of it. See posterCropTop in build-media.mjs.
     posterAt: 26,
+    posterCropTop: 0.13,
   },
   {
+    // Recut so the film ends by going through the gate.
+    //
+    // The master never shows that. What it has, at 86-97s, is the camera
+    // standing inside the gate and retreating as the great timber doors
+    // swing closed — the monument avenue narrowing to a slit. Run backwards
+    // it is precisely the ending wanted: the doors part and the camera walks
+    // through into the grounds. Hence `reverse` on the last window; see
+    // build-media.mjs for why that is safe in a scrub.
     slug: "shiv-shrushti",
     source: "public/videos/01. Shiv Shrushti - Landmark of Baramati.mov",
-    start: 9,
-    duration: 45,
-    frames: 120,
+    // Ordered to the studio's brief: come in on the left of the precinct,
+    // travel right along the ramparts, settle on the centre, then go through
+    // the gate. The master does not run in that order, so the windows below
+    // are lifted out of it and concatenated — which is what `segments` is
+    // for. Each ends clear of the fades between shots (30s, 84s), or the
+    // scrub would pass through black.
+    segments: [
+      { start: 9, end: 29, label: "Left — approach along the ramparts" },
+      { start: 66, end: 83, label: "Right — warrior niches and fountains" },
+      { start: 54, end: 64, label: "Middle — the gateway head-on" },
+      // Ends at 86 rather than 85: the shot crossfades in until 86, and
+      // reversed that fade would have been the final frame of the film.
+      // Starts at 97.4, just before the cut to the exterior at ~98.
+      { start: 86, end: 97.4, reverse: true, label: "Gates open (reversed)" },
+    ],
+    // Up from 120. The cut is 58s against the old 45s and now carries four
+    // beats rather than one continuous move, so this is a denser sample as
+    // well as a longer one — 3.1 frames/sec against 2.7. Frames are shared
+    // by window length, which gives the gate opening about 35 of them.
+    frames: 180,
     posterAt: 30,
+    posterCropTop: 0.11,
   },
   {
     slug: "yamai-lake",
@@ -49,6 +78,7 @@ export const MEDIA = [
     duration: 45,
     frames: 120,
     posterAt: 30,
+    posterCropTop: 0.10,
   },
   {
     slug: "ss-villa-lucknow",
@@ -56,7 +86,13 @@ export const MEDIA = [
     start: 10,
     duration: 45,
     frames: 120,
-    posterAt: 22,
+    // 48s, not 22s: the old still carried "ELEVATION / Front Side" burnt
+    // across its foot. This one is a clean three-quarter view. The top band
+    // has to go regardless — every frame of this master is stamped with
+    // another practice's logo, "GLOBAL DESIGN ... ARCHITECTS & INTERIOR
+    // DESIGNER", which must not appear on the studio's own site.
+    posterAt: 48,
+    posterCropTop: 0.20,
   },
   {
     slug: "nashik-villa",
@@ -106,7 +142,13 @@ export const MEDIA = [
     start: 8,
     duration: 45,
     frames: 120,
-    posterAt: 34,
+    // 66s, not 34s: 34s is a night aerial that reads as a dark smudge in a
+    // project card. This is the arcade and lit windows, the best-lit frame
+    // in the film. Trimmed top and bottom for the phone number and the
+    // "PARKING AREA" caption.
+    posterAt: 66,
+    posterCropTop: 0.16,
+    posterCropBottom: 0.15,
   },
 ];
 
@@ -117,3 +159,42 @@ export const MEDIA = [
 export const FRAME_WIDTH = 1280;
 /** libwebp quality (0-100). */
 export const FRAME_QUALITY = 62;
+
+// 640px wide at 4:5 is 640x800, which is 2x a 320pt phone plate. Going wider
+// buys nothing visible and costs both payload and, more sharply, decoded
+// bitmap: every extra 100px of width is another ~0.5MB per frame held
+// resident on a device that will kill the tab for it.
+const MOBILE_FRAME_WIDTH = 640;
+const MOBILE_FRAME_QUALITY = 58;
+/** Plate aspect, width / height. Mirrored by `aspect` in lib/projects.ts. */
+export const MOBILE_ASPECT = 0.8;
+
+/**
+ * Derives the phone build of a desktop entry: same source, same cut, same
+ * shot order — only the framing and the weight change.
+ *
+ * A phone cannot be handed the desktop set. Nashik's is 20MB on the wire and
+ * roughly a gigabyte of decoded bitmap. But the reason for a separate build
+ * is framing, not weight: a 16:9 frame covered into a 390x844 portrait
+ * viewport shows the middle 26% of its width, which turns the studio's wide
+ * shots into a slice of wall. Cropped to 4:5 and shown as a plate rather than
+ * full-bleed, 45% of the width survives.
+ *
+ * Derived rather than written out per set so the two builds of a film can
+ * never drift apart. Recut a film and its phone build follows automatically —
+ * only the frame counts in lib/projects.ts need updating alongside.
+ *
+ * Half the desktop frame count, run over a shorter scroll (scrollLength 3 on
+ * the client), lands at ~30 frames per viewport against the desktop's 36 —
+ * near enough that the motion reads the same.
+ */
+const mobileOf = (entry) => ({
+  ...entry,
+  slug: `${entry.slug}-mobile`,
+  frames: Math.round(entry.frames / 2),
+  frameWidth: MOBILE_FRAME_WIDTH,
+  frameQuality: MOBILE_FRAME_QUALITY,
+  cropAspect: MOBILE_ASPECT,
+});
+
+export const MEDIA = [...DESKTOP, ...DESKTOP.map(mobileOf)];
