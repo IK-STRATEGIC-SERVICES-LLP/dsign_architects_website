@@ -30,6 +30,8 @@ type Props = {
   interactive?: boolean;
   /** Shows the project's image count and a progress rail. */
   showIndicator?: boolean;
+  /** Fires when an interactive slice is clicked, passing its index. */
+  onSliceClick?: (index: number) => void;
   /**
    * Must position the carousel itself — the slices fill it absolutely, so
    * the root has to be a containing block with a height of its own. The
@@ -49,6 +51,7 @@ export function FocusSliceCarousel({
   showIndicator = true,
   className = "absolute inset-0",
   sizes = "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw",
+  onSliceClick,
 }: Props) {
   const [focused, setFocused] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -101,13 +104,16 @@ export function FocusSliceCarousel({
             // `flex-basis: 0` on every slice makes grow the sole arbiter of
             // width, so the ratio holds however many images there are.
             animate={{ flexGrow: isFocused ? focusRatio : 1 }}
-            transition={{ duration: 0.75, ease: easeLuxe }}
+            transition={{ duration: 0.4, ease: easeLuxe }}
             style={{ flexBasis: 0 }}
             className="relative min-w-0 overflow-hidden rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
             {...(interactive
               ? {
                   type: "button" as const,
-                  onClick: () => setFocused(i),
+                  onClick: () => {
+                    setFocused(i);
+                    onSliceClick?.(i);
+                  },
                   "aria-label": `${alt} — image ${i + 1} of ${images.length}`,
                   "aria-current": isFocused,
                 }
@@ -124,7 +130,7 @@ export function FocusSliceCarousel({
             <motion.div
               aria-hidden
               animate={{ opacity: isFocused ? 0 : 0.45 }}
-              transition={{ duration: 0.75, ease: easeLuxe }}
+              transition={{ duration: 0.4, ease: easeLuxe }}
               className="pointer-events-none absolute inset-0 bg-ink"
             />
           </Slice>

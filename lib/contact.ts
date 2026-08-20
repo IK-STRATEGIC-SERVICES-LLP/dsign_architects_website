@@ -2,8 +2,14 @@
 // footer, the closing CTA and the page's structured data, and a phone number
 // that disagrees with itself across three places is worse than no number.
 
-export const STUDIO_PHONE = "+91 96076 97369";
-export const STUDIO_PHONE_HREF = "tel:+919607697369";
+/**
+ * The studio's phone lines. Each entry is a labelled tel: URI so the same
+ * data can render as a link in the footer/CTA and as a JSON-LD telephone.
+ */
+export const STUDIO_PHONES = [
+  { label: "+91 76200 73690", href: "tel:+917620073690" },
+  { label: "+91 7822-928756", href: "tel:+917822928756" },
+] as const;
 export const STUDIO_EMAIL = "info@dsignarchitects.com";
 export const STUDIO_EMAIL_HREF = `mailto:${STUDIO_EMAIL}`;
 export const STUDIO_ADDRESS =

@@ -12,17 +12,12 @@ import {
   STUDIO_ADDRESS,
   STUDIO_EMAIL,
   STUDIO_EMAIL_HREF,
-  STUDIO_PHONE,
-  STUDIO_PHONE_HREF,
+  STUDIO_PHONES,
 } from "@/lib/contact";
 
+// Phones live in the primary call buttons above; the grid below carries the
+// email and address only, so neither number is shown twice.
 const CONTACT_DETAILS = [
-  {
-    icon: Phone,
-    label: "Call the studio",
-    value: STUDIO_PHONE,
-    href: STUDIO_PHONE_HREF,
-  },
   {
     icon: Mail,
     label: "Email us",
@@ -74,20 +69,23 @@ export function CTA() {
                   aria-hidden
                 />
               </a>
-              <a
-                href={STUDIO_PHONE_HREF}
-                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full glass-gold px-8 py-4 text-sm font-semibold text-porcelain transition-colors duration-200 hover:bg-white/10 hover:border-gold/50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
-              >
-                <Phone className="h-4 w-4" aria-hidden />
-                {STUDIO_PHONE}
-              </a>
+              {STUDIO_PHONES.map((phone) => (
+                <a
+                  key={phone.href}
+                  href={phone.href}
+                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full glass-gold px-8 py-4 text-sm font-semibold text-porcelain transition-colors duration-200 hover:bg-white/10 hover:border-gold/50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+                >
+                  <Phone className="h-4 w-4" aria-hidden />
+                  {phone.label}
+                </a>
+              ))}
             </div>
           </div>
         </Reveal>
 
-        <StaggerGroup className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StaggerGroup className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {CONTACT_DETAILS.map((detail) => (
-            <StaggerItem key={detail.label}>
+            <StaggerItem key={detail.href}>
               <a
                 href={detail.href}
                 {...(detail.href === MAPS_URL
