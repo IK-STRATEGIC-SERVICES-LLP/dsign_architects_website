@@ -32,9 +32,33 @@ export const PORTFOLIO: PortfolioWork[] = generated.projects as PortfolioWork[];
  * it. The profile gives larger schemes several consecutive pages — Beacon
  * Hotel runs to four — and `PORTFOLIO` has one entry per page, so showing
  * that list directly puts the same project on the wall up to four times.
- * Grouping on title + location collapses those runs into one project
- * carrying every image the profile devotes to it, in page order.
+ * Grouping on a normalised title + location collapses those runs into one
+ * project carrying every image the profile devotes to it, in page order.
  */
+
+/**
+ * Fold variant titles for the same project onto one grouping key. The PDF
+ * paginates a single scheme across labelled fragments — "The Bishop's School"
+ * for the architecture shots, "The Bishops School Lobby" for the interiors —
+ * and even misspells the name between pages ("Collectors Office" vs "Collector
+ * Office - Conference"). This unifies those fragments so each project tiles
+ * once, keyed only on the project's name and location rather than the
+ * category or sub-shot the profile assigns each page.
+ */
+function portfolioKey(title: string, location: string): string {
+  const base = title
+    .toLowerCase()
+    .replace(/['’]/g, "") // unify apostrophe forms: Bishop's → Bishops
+    .replace(/^\s*the\s+/, "") // drop leading "the"
+    .replace(/\s+-\s*cambridge\s*$/, "")
+    .replace(/\s+-\s*(?:conference|auditorium)\s*$/, "")
+    .replace(/\s+(?:lobby|reception|conference|auditorium|multi-?purpose\s+hall)\s*$/, "")
+    .trim();
+  // Collapse plural/possessive drift so "Collectors" and "Collector" align.
+  const singularised = base.replace(/\b\w{2,}s\b/g, (word) => word.slice(0, -1));
+  return `${singularised}|${location.toLowerCase().trim()}`;
+}
+
 export type PortfolioProject = {
   slug: string;
   title: string;
@@ -49,7 +73,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = (() => {
   const byProject = new Map<string, PortfolioProject>();
 
   for (const work of PORTFOLIO) {
-    const key = `${work.category}|${work.title}|${work.location}`.toLowerCase();
+    const key = portfolioKey(work.title, work.location);
     const existing = byProject.get(key);
     if (existing) {
       existing.images.push(work.image);

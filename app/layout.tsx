@@ -6,6 +6,7 @@ import {
   LINKEDIN_URL,
   MAPS_URL,
   STUDIO_EMAIL,
+  STUDIO_PHONES,
 } from "@/lib/contact";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -82,7 +83,7 @@ const ORGANIZATION_JSON_LD = {
   description: SITE_DESCRIPTION,
   url: SITE_URL,
   email: STUDIO_EMAIL,
-  telephone: "+91-9607697369",
+  telephone: STUDIO_PHONES.map((phone) => phone.label),
   address: {
     "@type": "PostalAddress",
     streetAddress:

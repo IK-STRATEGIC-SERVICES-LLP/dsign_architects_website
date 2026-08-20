@@ -8,8 +8,7 @@ import {
   STUDIO_ADDRESS,
   STUDIO_EMAIL,
   STUDIO_EMAIL_HREF,
-  STUDIO_PHONE,
-  STUDIO_PHONE_HREF,
+  STUDIO_PHONES,
 } from "@/lib/contact";
 
 const FOOTER_LINKS = [
@@ -85,7 +84,11 @@ const SOCIALS = [
 ];
 
 const CONTACT_DETAILS = [
-  { icon: Phone, href: STUDIO_PHONE_HREF, label: STUDIO_PHONE },
+  ...STUDIO_PHONES.map((phone) => ({
+    icon: Phone,
+    href: phone.href,
+    label: phone.label,
+  })),
   { icon: Mail, href: STUDIO_EMAIL_HREF, label: STUDIO_EMAIL },
   { icon: MapPin, href: MAPS_URL, label: STUDIO_ADDRESS },
 ];

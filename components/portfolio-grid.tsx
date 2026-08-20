@@ -17,6 +17,12 @@ const ALL = "All Work" as const;
 export function PortfolioGrid() {
   const [filter, setFilter] = useState<string>(ALL);
   const [active, setActive] = useState<PortfolioProject | null>(null);
+  const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
+
+  const closeLightbox = () => {
+    setActive(null);
+    setZoomedIndex(null);
+  };
 
   const tabs = useMemo(() => {
     const present = PORTFOLIO_CATEGORIES.filter((c) =>
@@ -125,7 +131,7 @@ export function PortfolioGrid() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            onClick={() => setActive(null)}
+            onClick={closeLightbox}
             role="dialog"
             aria-modal="true"
             aria-label={active.title}
@@ -133,7 +139,7 @@ export function PortfolioGrid() {
           >
             <button
               type="button"
-              onClick={() => setActive(null)}
+              onClick={closeLightbox}
               aria-label="Close"
               className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full glass text-porcelain transition-colors hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
             >
@@ -145,18 +151,19 @@ export function PortfolioGrid() {
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.35, ease: easeLuxe }}
               onClick={(e) => e.stopPropagation()}
-              className="flex max-h-full w-full max-w-5xl flex-col gap-4"
+              className="flex max-h-full w-full max-w-7xl flex-col gap-4"
             >
-              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-gold/25">
+              <div className="relative aspect-[2/1] w-full overflow-hidden rounded-2xl border border-gold/25">
                 {active.images.length > 1 ? (
                   <FocusSliceCarousel
                     images={active.images}
                     alt={active.title}
                     className="absolute inset-0"
                     interactive
-                    interval={4200}
+                    interval={3600}
                     focusRatio={5}
-                    sizes="(min-width: 1024px) 60vw, 100vw"
+                    sizes="(min-width: 1280px) 80vw, (min-width: 640px) 90vw, 100vw"
+                    onSliceClick={setZoomedIndex}
                   />
                 ) : (
                   <Image
@@ -164,7 +171,8 @@ export function PortfolioGrid() {
                     alt={active.title}
                     fill
                     sizes="100vw"
-                    className="object-contain"
+                    className="cursor-zoom-in object-contain"
+                    onClick={() => setZoomedIndex(0)}
                   />
                 )}
               </div>
@@ -183,6 +191,47 @@ export function PortfolioGrid() {
                 ) : null}
               </figcaption>
             </motion.figure>
+
+            {/* Fullscreen image zoom — click overlay or bottom-center button to close */}
+            <AnimatePresence>
+              {zoomedIndex !== null ? (
+                <motion.div
+                  key="zoom-overlay"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setZoomedIndex(null)}
+                  className="fixed inset-0 z-[110] flex cursor-zoom-out items-center justify-center bg-ink/95 backdrop-blur-sm"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3, ease: easeLuxe }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="relative flex h-full w-full items-center justify-center"
+                  >
+                    <Image
+                      src={active.images[zoomedIndex]}
+                      alt={active.title}
+                      fill
+                      sizes="100vw"
+                      className="object-contain"
+                      priority
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setZoomedIndex(null)}
+                      aria-label="Close zoom"
+                      className="absolute bottom-8 left-1/2 flex h-12 w-12 items-center justify-center -translate-x-1/2 rounded-full glass text-porcelain transition-colors hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+                    >
+                      <X className="h-5 w-5" aria-hidden />
+                    </button>
+                  </motion.div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
           </motion.div>
         ) : null}
       </AnimatePresence>
