@@ -21,11 +21,26 @@ export const PORTFOLIO_CATEGORIES = [
   "Institutional",
   "Residential",
   "Interior",
+  "Vacation Homes",
 ] as const;
 
 export type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number];
 
-export const PORTFOLIO: PortfolioWork[] = generated.projects as PortfolioWork[];
+/**
+ * The PDF's own caption for this page is a generic building-code label, not
+ * the project's actual name. Corrected here rather than in
+ * portfolio.generated.json, since that file is rebuilt from the source PDF
+ * by scripts/extract-pdf-assets.py and a hand-edit there would be silently
+ * overwritten on the next run.
+ */
+const TITLE_OVERRIDES: Record<string, string> = {
+  "g-11-residential-tower-solapur": "Kalyani Majestic",
+};
+
+export const PORTFOLIO: PortfolioWork[] = (generated.projects as PortfolioWork[]).map(
+  (work) =>
+    TITLE_OVERRIDES[work.slug] ? { ...work, title: TITLE_OVERRIDES[work.slug] } : work
+);
 
 /**
  * A project as the studio talks about it, rather than as the PDF paginates
@@ -69,6 +84,32 @@ export type PortfolioProject = {
   page: number;
 };
 
+/**
+ * Projects the studio has added directly, outside the practice profile PDF.
+ * Kept separate from PORTFOLIO rather than folded into portfolio.generated.json,
+ * since that file is rebuilt from the source PDF by
+ * scripts/extract-pdf-assets.py and would silently drop a hand-added entry
+ * on the next run. `page` is set past the PDF's own page range so these
+ * sort after every profile project.
+ */
+const CUSTOM_PORTFOLIO_PROJECTS: PortfolioProject[] = [
+  {
+    slug: "outhouse-villa-lonavala",
+    title: "Outhouse Villa",
+    location: "LONAVALA",
+    category: "Vacation Homes",
+    images: [
+      "/portfolio/outhouse-villa-lonavala.jpg",
+      "/portfolio/outhouse-villa-lonavala-2.jpg",
+      "/portfolio/outhouse-villa-lonavala-3.jpg",
+      "/portfolio/outhouse-villa-lonavala-4.jpg",
+      "/portfolio/outhouse-villa-lonavala-5.jpg",
+      "/portfolio/outhouse-villa-lonavala-6.jpg",
+    ],
+    page: 1000,
+  },
+];
+
 export const PORTFOLIO_PROJECTS: PortfolioProject[] = (() => {
   const byProject = new Map<string, PortfolioProject>();
 
@@ -91,7 +132,9 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = (() => {
     });
   }
 
-  return [...byProject.values()].sort((a, b) => a.page - b.page);
+  return [...byProject.values(), ...CUSTOM_PORTFOLIO_PROJECTS].sort(
+    (a, b) => a.page - b.page
+  );
 })();
 
 /**

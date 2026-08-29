@@ -23,7 +23,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/projects",
   title: "Projects — D'sign Architects",
   description:
-    "Master planning, landscape, government, commercial, institutional, residential and interior projects delivered by D'sign Architects across India and overseas.",
+    "Master planning, landscape, government, commercial, institutional, residential, interior and vacation home projects delivered by D'sign Architects across India and overseas.",
 });
 
 export default function ProjectsIndexPage() {
