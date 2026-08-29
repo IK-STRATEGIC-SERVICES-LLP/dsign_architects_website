@@ -162,6 +162,7 @@ export function PortfolioGrid() {
                     interactive
                     interval={3600}
                     focusRatio={5}
+                    showArrows
                     sizes="(min-width: 1280px) 80vw, (min-width: 640px) 90vw, 100vw"
                     onSliceClick={setZoomedIndex}
                   />
