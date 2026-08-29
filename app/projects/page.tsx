@@ -14,7 +14,6 @@ import {
 } from "@/components/motion-primitives";
 import { Navbar } from "@/components/navbar";
 import { PortfolioGrid } from "@/components/portfolio-grid";
-import { ProjectsCarousel } from "@/components/projects-carousel";
 import { PROJECTS } from "@/lib/projects";
 import { PORTFOLIO_PROJECTS, countByCategory } from "@/lib/portfolio";
 import { pageMetadata } from "@/lib/site";
@@ -23,7 +22,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/projects",
   title: "Projects — D'sign Architects",
   description:
-    "Master planning, landscape, government, commercial, institutional, residential and interior projects delivered by D'sign Architects across India and overseas.",
+    "Master planning, landscape, government, commercial, institutional, residential, interior and vacation home projects delivered by D'sign Architects across India and overseas.",
 });
 
 export default function ProjectsIndexPage() {
@@ -53,28 +52,6 @@ export default function ProjectsIndexPage() {
               </StaggerItem>
             ))}
           </StaggerGroup>
-        </section>
-
-        {/* Films — the projects with full walkthrough experiences. */}
-        <section className="mx-auto mt-24 max-w-7xl px-4 sm:px-6 md:mt-32 lg:px-8">
-          <Reveal>
-            <div className="flex flex-col gap-3">
-              <span className="inline-flex w-fit items-center gap-2 rounded-full glass px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">
-                Featured
-              </span>
-              <h2 className="font-display text-3xl text-porcelain sm:text-4xl">
-                Walk Through Them
-              </h2>
-              <p className="max-w-2xl text-base leading-relaxed text-mist">
-                These projects have full presentation films — scroll through each
-                one and the camera moves with you.
-              </p>
-            </div>
-          </Reveal>
-
-          <div className="mt-12">
-            <ProjectsCarousel projects={PROJECTS} interval={4000} />
-          </div>
         </section>
 
         {/* The full practice portfolio, filterable. */}
