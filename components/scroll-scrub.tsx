@@ -263,16 +263,32 @@ export function ScrollScrub({
       drawnRef.current = -1;
 
       if (!compact) {
-        const rest = Array.from(
-          { length: activeCount - first },
-          (_, i) => i + first
-        ).filter((i) => !skeleton.has(i));
+        const rest = new Set(
+          Array.from(
+            { length: activeCount - first },
+            (_, i) => i + first
+          ).filter((i) => !skeleton.has(i))
+        );
         // Small concurrent batches keep the network busy without stalling
-        // interaction on the main thread.
+        // interaction on the main thread. Re-sorted by distance from the
+        // live playhead before every batch, rather than filled in a fixed
+        // 0→N order: a visitor who scrolls straight past the skeleton on
+        // first load used to outrun a purely sequential backfill, landing on
+        // frames still queued minutes away and holding the picture until it
+        // arrived. Chasing the playhead instead means whatever the visitor
+        // is looking at now is always next in line.
         const size = 12;
-        for (let i = 0; i < rest.length; i += size) {
+        while (rest.size > 0) {
           if (cancelled) return;
-          await Promise.all(rest.slice(i, i + size).map(load));
+          const target = Math.min(
+            activeCount - 1,
+            first + Math.round(progressRef.current * (activeCount - 1 - first))
+          );
+          const batch = [...rest]
+            .sort((a, b) => Math.abs(a - target) - Math.abs(b - target))
+            .slice(0, size);
+          batch.forEach((i) => rest.delete(i));
+          await Promise.all(batch.map(load));
         }
         return;
       }
